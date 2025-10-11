@@ -1,0 +1,54 @@
+# --- Node ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Vite ---
+dist/
+dist-ssr/
+*.local
+
+# --- Electron ---
+out/
+build/
+release/
+*.exe
+*.dmg
+*.AppImage
+
+# --- Logs ---
+logs/
+*.log
+log.txt
+
+# --- Editor / OS ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Environment files ---
+.env
+.env.*
+!.env.example
+
+# --- Cache / Temp ---
+.cache/
+temp/
+tmp/
+*.tmp
+
+# --- Tests ---
+coverage/
+*.spec.*
+*.test.*
+
+# --- Misc ---
+# Ignore any local data files
+*.db
+*.sqlite
+*.bak
