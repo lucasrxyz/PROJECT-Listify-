@@ -1,7 +1,6 @@
 {
   "name": "listify-app",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,15 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.22",
-    "vuetify": "^3.10.5"
+    "axios": "^1.12.2",
+    "vite-plugin-vuetify": "^2.0.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.7.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
-    "concurrently": "^9.2.1",
-    "cross-env": "^10.1.0",
-    "electron": "^38.2.2",
-    "vite": "^7.1.7",
-    "wait-on": "^9.0.1"
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0"
   }
 }

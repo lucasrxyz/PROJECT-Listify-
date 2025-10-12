@@ -1,27 +1,22 @@
 <template>
   <v-app>
-    <!-- Layout principal -->
-    <v-navigation-drawer app permanent width="240">
-      <Sidebar />
-    </v-navigation-drawer>
+    <!-- Barre supérieure -->
+    <v-app-bar app color="primary" dark>
+      <v-toolbar-title>Listify</v-toolbar-title>
+    </v-app-bar>
 
-    <v-main class="bg-grey-darken-4">
-      <v-container fluid>
-        <PlaylistView />
-      </v-container>
+    <!-- Contenu des pages -->
+    <v-main>
+      <router-view />
     </v-main>
 
-    <!-- Lecteur audio en bas -->
-    <v-footer app padless height="90" class="bg-grey-darken-3">
-      <AudioPlayer />
-    </v-footer>
+    <!-- Player persistant en bas -->
+    <PlayerBar />
   </v-app>
 </template>
 
 <script setup>
-import Sidebar from './components/Sidebar.vue'
-import PlaylistView from './components/PlaylistView.vue'
-import AudioPlayer from './components/AudioPlayer.vue'
+import PlayerBar from './components/AudioPlayer.vue'
 </script>
 
 <style>
