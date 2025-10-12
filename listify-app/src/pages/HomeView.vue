@@ -16,7 +16,7 @@
           max-height="200"
 
           class="rounded-lg"
-          color="#ffd000"
+          color="niceColor"
           title="Liked Songs"
           subtitle="24 songs"
 

@@ -6,8 +6,8 @@
       <NavDrawer />
 
       <!-- Contenu principal -->
-      <v-main style="background-color: #191414 !important;">
-        <v-app-bar :elevation="0" app density="compact" color="#191414" dark height="72">
+      <v-main style="background-color: #181818 !important;">
+        <v-app-bar :elevation="0" app density="compact" color="#181818" dark height="72">
           <v-spacer></v-spacer>
           <v-text-field
             placeholder="Search"

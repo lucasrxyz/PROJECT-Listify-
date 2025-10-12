@@ -76,39 +76,34 @@
         v-for="playlist in playlists"
         :key="playlist.id"
         :title="playlist.name"
-        :to="`/player/${playlist.id}`"
+        :to="`/playlists`"
         link
+        :active="false"
         class="mr-2 ml-2 mt-1 rounded-lg"
+        @click.prevent="openPlaylist(playlist.id)"
       />
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-const playlists = ref([])
+const store = useStore()
+const router = useRouter()
 
-onMounted(() => {
-  // On récupère les playlists stockées dans localStorage
-  const stored = localStorage.getItem('playlists')
-  if (stored) {
-    playlists.value = JSON.parse(stored)
-  }
-})
+const playlists = computed(() => store.state.playlists)
 
-// Optionnel : bouton pour créer une nouvelle playlist (placeholder)
-const createPlaylist = () => {
+function createPlaylist() {
   const name = prompt('Nom de la nouvelle playlist :')
   if (!name) return
+  store.dispatch('createPlaylist', name)
+}
 
-  const newPlaylist = {
-    id: Date.now(),
-    name,
-    songs: []
-  }
-
-  playlists.value.push(newPlaylist)
-  localStorage.setItem('playlists', JSON.stringify(playlists.value))
+function openPlaylist(id) {
+  // go to playlists page and maybe set selected id via query
+  router.push({ path: '/playlists', query: { pid: id } })
 }
 </script>

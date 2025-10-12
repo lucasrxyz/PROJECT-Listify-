@@ -22,6 +22,7 @@ export default createVuetify({
           primary: '#8E24AA',
           secondary: '#03DAC6',
           error: '#CF6679',
+          niceColor: '#ffd000',
         },
       },
     },
