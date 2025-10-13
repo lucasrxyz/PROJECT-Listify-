@@ -170,6 +170,7 @@ function createPlayer() {
 // --- Player state ---
 function onPlayerStateChange(event) {
   const state = event.data
+
   switch (state) {
     case window.YT.PlayerState.ENDED:
       store.dispatch('next')
@@ -179,6 +180,8 @@ function onPlayerStateChange(event) {
       startProgressTimer()
       break
     case window.YT.PlayerState.PAUSED:
+      // ⚠️ Ignore les pauses pendant un skip
+      if (skipInProgress) return
       store.commit('PLAYER_SET_PLAYING', false)
       stopProgressTimer()
       break
@@ -238,8 +241,17 @@ function stopProgressTimer() {
 // --- Controls ---
 function togglePlay() { store.dispatch('togglePlay') }
 function toggleRepeat() { store.dispatch('toggleRepeat') }
-function nextSong() { store.dispatch('next') }
-function prevSong() { store.dispatch('prev') }
+function nextSong() {
+  skipInProgress = true
+  store.dispatch('next')
+  setTimeout(() => { skipInProgress = false }, 1000)
+}
+
+function prevSong() {
+  skipInProgress = true
+  store.dispatch('prev')
+  setTimeout(() => { skipInProgress = false }, 1000)
+}
 
 </script>
 
