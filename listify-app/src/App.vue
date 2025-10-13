@@ -1,18 +1,19 @@
 <template>
   <v-app>
-    <v-layout class="h-screen">
+    <div class="animated-bg"></div> <!-- 🌫️ Fond animé flouté -->
 
+    <v-layout class="h-screen transparent-layout">
       <!-- Menu latéral -->
       <NavDrawer />
 
       <!-- Contenu principal -->
-      <v-main style="background-color: #181818 !important;">
-        <v-app-bar :elevation="0" app density="compact" color="#181818" dark height="72">
+      <v-main class="transparent-main">
+        <v-app-bar :elevation="0" height="80" app density="compact" class="transparent-bar">
           <v-spacer></v-spacer>
           <v-text-field
             placeholder="Search"
             variant="outlined"
-            density="comfortable"
+            density="compact"
             rounded="lg"
             hide-details
             prepend-inner-icon="mdi-magnify"
@@ -20,16 +21,16 @@
             style="max-width: 400px; width: 50%;"
           />
 
-          <!-- Spacer droite -->
           <v-spacer></v-spacer>
-          <!-- Boutons fenêtre (min, max, close) -->
           <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus"></v-btn>
           <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline"></v-btn>
           <v-btn style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close"></v-btn>
-
+          <br />
         </v-app-bar>
 
-        <router-view />
+        <div class="router-wrapper">
+          <router-view/>
+        </div>
       </v-main>
     </v-layout>
 
@@ -43,23 +44,92 @@ import PlayerBar from './components/AudioPlayer.vue'
 import NavDrawer from './components/NavDrawer.vue'
 </script>
 
-<style>
+<style lang="scss">
 html, body, #app {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  background: #121212;
 }
 
-/* Pour tous les navigateurs et tous les éléments */
+/* Supprimer les scrollbars */
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer / Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+.router-wrapper {
+  padding: 0px;         // tu peux ajuster la marge
+  margin: 20px;
+  border-radius: 24px;   // arrondir les coins
+  overflow: hidden;      // pour que le contenu ne dépasse pas les coins arrondis
+  background: rgba(24, 24, 24, 0.3); // léger fond translucide si tu veux
+  backdrop-filter: blur(10px);
+}
+/* 🌫️ --- FOND ANIMÉ --- */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+
+  background: radial-gradient(circle at 20% 30%, #1e22fd 0%, transparent 40%),
+              radial-gradient(circle at 70% 70%, #00ffaa 0%, transparent 40%),
+              radial-gradient(circle at 40% 80%, #ab63fd 0%, transparent 45%);
+  background-size: 200% 200%;
+  filter: blur(60px);
+  animation: moveBg 20s infinite alternate ease-in-out;
 }
 
-*::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+@keyframes moveBg {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 50% 100%;
+  }
 }
-.v-application {
-  background: transparent !important;
+
+/* 🌙 --- LAYOUT TRANSPARENT --- */
+.transparent-layout {
+  backdrop-filter: blur(15px);
+  background: rgba(18, 18, 18, 0.4);
+  position: relative;
+  z-index: 0;
+}
+
+.transparent-main {
+  background: rgba(18, 18, 18, 0.2) !important;
+  backdrop-filter: blur(10px);
+  border-radius:24px !important;
+}
+
+.transparent-bar {
+  background: rgba(24, 24, 24, 0.4) !important;
+  backdrop-filter: blur(12px);
+}
+
+/* --- Effet “verre” subtil sur tout le contenu --- */
+.v-card,
+.v-container,
+.v-list,
+.v-navigation-drawer {
+  background-color: rgba(24, 24, 24, 0.3) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* --- Footer player --- */
+.v-footer {
+  background: rgba(18, 18, 18, 0.5) !important;
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 </style>

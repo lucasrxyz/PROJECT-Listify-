@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-10 ml-10">
+  <v-container class="py-10">
     <v-row>
       <v-col cols="12">
         <h1 class="text-h4 mb-6">Recently played</h1>

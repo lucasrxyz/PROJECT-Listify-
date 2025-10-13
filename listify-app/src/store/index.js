@@ -27,6 +27,7 @@ export default createStore({
       playlistId: null,    // id of playlist being played
       songIndex: 0,        // index inside playlist.songs
       isPlaying: false,
+      repeatMode: 0 // 0 = off, 1 = repeat playlist, 2 = repeat one     // whether to repeat the current song
     }
   },
   getters: {
@@ -80,6 +81,9 @@ export default createStore({
     },
     PLAYER_SET_PLAYING(state, isPlaying) {
       state.player.isPlaying = isPlaying
+    },
+    PLAYER_SET_REPEAT_MODE(state, mode) {
+      state.player.repeatMode = mode
     }
   },
   actions: {
@@ -108,6 +112,10 @@ export default createStore({
     },
     togglePlay({ commit, state }) {
       commit('PLAYER_SET_PLAYING', !state.player.isPlaying)
+    },
+    toggleRepeat({ commit, state }) {
+      const nextMode = (state.player.repeatMode + 1) % 3
+      commit('PLAYER_SET_REPEAT_MODE', nextMode)
     },
     next({ commit, state }) {
       const playlist = state.playlists.find(p => p.id === state.player.playlistId)
