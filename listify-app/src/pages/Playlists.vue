@@ -3,6 +3,24 @@
     <v-row class="mb-4">
       <v-col>
         <h1 class="text-h4 mb-6">Current playlists</h1>
+        <p>
+          <span 
+            class="opacity-50 cursor-pointer" 
+            @click="href('/')"
+            @mouseover="hoverHome = true" 
+            @mouseleave="hoverHome = false"
+            :class="hoverHome ? 'text-decoration-underline' : ''"
+          >Home</span>
+          <span class="opacity-50">&nbsp;>&nbsp;</span>
+          <span 
+            class="opacity-70 cursor-pointer" 
+            @click="href('/playlists')"
+            @mouseover="hoverPlaylists = true" 
+            @mouseleave="hoverPlaylists = false"
+            :class="hoverPlaylists ? 'text-decoration-underline' : ''"
+          >Playlists
+          </span>
+        </p>
       </v-col>
       <v-col class="d-flex justify-end mr-10">
         <v-btn color="niceColor" :ripple="false" @click="promptNewPlaylist" variant="text">
@@ -14,7 +32,10 @@
     <v-row>
       <!-- Liste des playlists -->
       <v-col cols="3">
-        <v-list two-line>
+        <v-list
+          two-line
+          class="rounded-lg"
+          style="max-height: 588px; overflow-y: auto;">
           <v-list-item
             v-for="pl in playlists"
             :key="pl.id"
@@ -32,10 +53,10 @@
                 <v-icon v-else icon="mdi-music" size="32" color="grey"/>
               </v-avatar>
             </template>
-
+          
             <v-list-item-content>
               <v-list-item-title>
-                {{ pl.name }}&nbsp;&nbsp;&nbsp;
+                {{ pl.name.name }}&nbsp;&nbsp;&nbsp;
                 <v-btn icon @click.stop="deletePlaylist(pl.id)" rounded-0 elevation="0" variant="text" class="rounded-lg" density="comfortable">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -45,6 +66,7 @@
           </v-list-item>
         </v-list>
       </v-col>
+
 
       <!-- Contenu de la playlist sélectionnée -->
       <v-col cols="8">
@@ -62,7 +84,7 @@
             </v-btn>
             <v-divider vertical class="flex-grow-1 mr-4"></v-divider>
 
-            <h1 class="text-h5 mr-4">{{ selectedPlaylist.name }}</h1>
+            <h1 class="text-h5 mr-4">{{ selectedPlaylist.name.name }}</h1>
 
             <v-btn class="elevation-0 rounded-lg" small variant="text" @click="openAddSongDialog">
               <v-icon class="mb-1 mr-2">mdi-plus</v-icon>Add
@@ -73,8 +95,15 @@
           <v-chip density="compact" class="mb-3" label>
             {{ selectedPlaylist.songs.timeLengthHour || "0" }}h {{ selectedPlaylist.songs.timeLengthMinute || "0" }}m
           </v-chip>
-
-          <v-list two-line class="rounded-lg">
+          <span class="ml-3 mr-2 mb-3" style="opacity: 0.4;"></span> <!-- ESPACE NE PAS SUPPRIMER -->
+          <v-chip color="niceColor" v-for="style in  selectedPlaylist.name.styles" density="compact" class="mb-3 ml-1 mr-1" label>
+            {{ style }}
+          </v-chip>
+          <v-list
+            two-line
+            class="rounded-lg"
+            style="max-height: 500px; overflow-y: auto;"
+          >
             <v-list-item
               v-for="(song, idx) in selectedPlaylist.songs"
               :key="song.id"
@@ -88,12 +117,12 @@
                 <v-btn icon @click.stop="removeSong(idx)" variant="plain" class="elevation-0 rounded-lg mr-5" density="comfortable">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
-
+              
                 <v-avatar size="56" rounded="lg" class="mr-3">
                   <v-img :src="`https://img.youtube.com/vi/${song.youtubeId}/mqdefault.jpg`" alt="Song thumbnail" />
                 </v-avatar>
               </template>
-
+            
               <v-list-item-content>
                 <v-list-item-title class="font-medium">
                   <span class="mr-3">{{ song.title || 'Untitled' }}</span>
@@ -125,6 +154,45 @@
       </v-card>
     </v-dialog>
   </v-container>
+<v-dialog v-model="newPlaylistDialog" max-width="400" max-height="300">
+  <v-card class="rounded-lg">
+    <v-card-text>
+      <v-text-field
+        v-model="newPlaylistName"
+        prepend-icon="mdi-playlist-plus"
+        label="Enter playlist name:"
+        placeholder="My new playlist"
+        variant="outlined"
+        density="compact"
+      />
+
+      <!-- Scrollable music style chips -->
+      <div class="d-flex overflow-x-auto py-2" style="gap: 8px;">
+        <v-chip
+          v-for="style in sortedStyles"
+          :key="style"
+          :variant="selectedStyles.includes(style) ? 'tonal' : 'outlined'"
+          :color="selectedStyles.includes(style) ? 'niceColor' : undefined"
+          class="cursor-pointer flex-shrink-0"
+          :prepend-icon="selectedStyles.includes(style) ? '' : 'mdi-plus'"
+          label
+          @click="toggleStyle(style)"
+        >
+          {{ style }}
+        </v-chip>
+      </div>
+    </v-card-text>
+
+    <v-divider></v-divider>
+
+    <v-card-actions>
+      <v-btn variant="plain" @click="newPlaylistDialog = false">Cancel</v-btn>
+      <v-btn variant="tonal" color="niceColor" @click="confirmNewPlaylist">Create</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+
 </template>
 
 <script setup>
@@ -143,14 +211,59 @@ const newSongUrl = ref('')
 const newSongTitle = ref('')
 const newSongArtist = ref('')
 
+const newPlaylistDialog = ref(false)
+const newPlaylistName = ref('')
+const musicStyles = [
+  'Underground', 'Rock', 'R&B', 'Rap', 'Trap', 'Alt. Trap', 'Drill', 'U.K Drill','Alt. Rock',
+  'Nu-Rock','Pop', 'Jazz', 'Funk', 'Soul', 'EDM', 'House', 'Techno', 'Reggae',
+  'Metal', 'Punk', 'Lo-fi', 'Classical', 'K-Pop', 'Synthwave', 'Indie', 'Chill',
+  'Ambient sound', 'Vaporwave', 'Country', 'Folk', 'Disco', 'Gospel', 'Ska'
+]
+const hoverHome = ref(false)
+const hoverPlaylists = ref(false)
+
+function href(path) {
+  window.location.href = path
+}
+
+const sortedStyles = computed(() => {
+  const selected = musicStyles.filter(s => selectedStyles.value.includes(s))
+  const notSelected = musicStyles.filter(s => !selectedStyles.value.includes(s))
+  return [...selected, ...notSelected]
+})
+const selectedStyles = ref([])
+
+function toggleStyle(style) {
+  const index = selectedStyles.value.indexOf(style)
+  if (index >= 0) {
+    selectedStyles.value.splice(index, 1)
+  } else {
+    selectedStyles.value.push(style)
+  }
+}
+
 // --- Création / sélection / suppression ---
 function promptNewPlaylist() {
-  const name = prompt('Nom de la nouvelle playlist :')
-  if (!name) return
-  store.dispatch('createPlaylist', name).then(pl => {
+  newPlaylistName.value = ''
+  newPlaylistDialog.value = true
+}
+
+
+// Fonction de confirmation de création de playlist
+function confirmNewPlaylist() {
+  if (!newPlaylistName.value.trim()) return
+  const playlistData = {
+    name: newPlaylistName.value,
+    styles: [...selectedStyles.value]
+  }
+  store.dispatch('createPlaylist', playlistData).then(pl => {
     selectedPlaylist.value = pl
   })
+  newPlaylistDialog.value = false
+  newPlaylistName.value = ''
+  selectedStyles.value = []
 }
+
 function selectPlaylist(pl) {
   selectedPlaylist.value = pl
 }

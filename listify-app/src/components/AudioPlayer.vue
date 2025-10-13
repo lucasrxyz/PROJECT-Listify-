@@ -13,9 +13,9 @@
 
       <!-- Zone centrale : boutons -->
       <div class="d-flex align-center justify-center mx-4" style="flex: 0 0 auto;">
-        <v-btn size="large" @click="prevSong" variant="plain" density="compact" icon="mdi-skip-previous"></v-btn>
-        <v-btn size="large" @click="togglePlay" variant="plain" density="compact" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
-        <v-btn size="large" @click="nextSong" variant="plain" density="compact" icon="mdi-skip-next"></v-btn>
+        <v-btn size="large" class="rounded-lg ma-1" @click="prevSong" variant="text" density="compact" icon="mdi-skip-previous"></v-btn>
+        <v-btn size="large" class="rounded-lg ma-1" @click="togglePlay" variant="tonal" density="compact" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
+        <v-btn size="large" class="rounded-lg ma-1" @click="nextSong" variant="text" density="compact" icon="mdi-skip-next"></v-btn>
       </div>
 
       <!-- Zone droite : barre de progression -->

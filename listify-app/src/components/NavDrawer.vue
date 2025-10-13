@@ -75,7 +75,7 @@
       <v-list-item
         v-for="playlist in playlists"
         :key="playlist.id"
-        :title="playlist.name"
+        :title="playlist.name.name"
         :to="`/playlists`"
         link
         :active="false"
