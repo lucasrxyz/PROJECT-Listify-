@@ -2,10 +2,10 @@
   <v-container fluid class="py-10">
     <v-row class="mb-4">
       <v-col>
-        <h1 class="text-h4 mb-6">Current playlists</h1>
+        <h1 class="text-h4 ml-5 mb-6">Current playlists</h1>
         <p>
           <span 
-            class="opacity-50 cursor-pointer" 
+            class="opacity-50 cursor-pointer ml-5" 
             @click="href('/')"
             @mouseover="hoverHome = true" 
             @mouseleave="hoverHome = false"

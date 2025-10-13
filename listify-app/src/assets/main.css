@@ -39,10 +39,6 @@ body::before {
   transition: all 0.2s ease;
 }
 
-.v-btn:hover {
-  background-color: rgba(168, 85, 247, 0.15) !important;
-  transform: scale(1.05);
-}
 
 /* --- Progress bar --- */
 .v-progress-linear {

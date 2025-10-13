@@ -90,6 +90,17 @@ let ytApiReady = false
 let playerReady = false
 let skipInProgress = false
 
+watch(currentSong, (newSong, oldSong) => {
+  if (!newSong || !playerReady) return
+  console.log('🎵 Loading new song:', newSong.title)
+  loadVideoById(newSong.youtubeId, true)
+})
+watch(isPlaying, (val) => {
+  if (!ytPlayer || !playerReady) return
+  if (val) ytPlayer.playVideo()
+  else ytPlayer.pauseVideo()
+})
+
 // --- Icônes repeat ---
 const repeatIcon = computed(() => {
   switch (repeatMode.value) {

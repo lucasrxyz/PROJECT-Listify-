@@ -22,9 +22,9 @@
           />
 
           <v-spacer></v-spacer>
-          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus"></v-btn>
-          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline"></v-btn>
-          <v-btn style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close"></v-btn>
+          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus" @click="windowMinimize"></v-btn>
+          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline" @click="windowMaximize"></v-btn>
+          <v-btn style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close" @click="windowClose"></v-btn>
           <br />
         </v-app-bar>
 
@@ -42,6 +42,10 @@
 <script setup>
 import PlayerBar from './components/AudioPlayer.vue'
 import NavDrawer from './components/NavDrawer.vue'
+
+const windowMinimize = () => window.electronAPI?.minimize()
+const windowMaximize = () => window.electronAPI?.maximize()
+const windowClose = () => window.electronAPI?.close()
 </script>
 
 <style lang="scss">
@@ -78,9 +82,9 @@ html, body, #app {
   overflow: hidden;
   z-index: 0;
 
-  background: radial-gradient(circle at 20% 30%, #1e22fd 0%, transparent 40%),
-              radial-gradient(circle at 70% 70%, #00ffaa 0%, transparent 40%),
-              radial-gradient(circle at 40% 80%, #ab63fd 0%, transparent 45%);
+  background: radial-gradient(circle at 20% 30%, #ffffff 0%, transparent 40%),
+              radial-gradient(circle at 70% 70%, #9e84dd 0%, transparent 40%),
+              radial-gradient(circle at 40% 80%, #64647e 0%, transparent 45%);
   background-size: 200% 200%;
   filter: blur(60px);
   animation: moveBg 20s infinite alternate ease-in-out;
@@ -101,7 +105,7 @@ html, body, #app {
 /* 🌙 --- LAYOUT TRANSPARENT --- */
 .transparent-layout {
   backdrop-filter: blur(15px);
-  background: rgba(18, 18, 18, 0.4);
+  background: rgba(18, 18, 18, 0.3);
   position: relative;
   z-index: 0;
 }
@@ -115,20 +119,24 @@ html, body, #app {
 .transparent-bar {
   background: rgba(24, 24, 24, 0.4) !important;
   backdrop-filter: blur(12px);
+  -webkit-app-region: drag; /* ⬅️ Permet de bouger la fenêtre */
 }
-
+.transparent-bar button,
+.v-btn {
+  -webkit-app-region: no-drag; /* ⬅️ Les boutons restent cliquables */
+}
 /* --- Effet “verre” subtil sur tout le contenu --- */
 .v-card,
 .v-container,
 .v-list,
 .v-navigation-drawer {
-  background-color: rgba(24, 24, 24, 0.3) !important;
+  background-color: rgba(24, 24, 24, 0.1) !important;
   backdrop-filter: blur(10px);
 }
 
 /* --- Footer player --- */
 .v-footer {
-  background: rgba(18, 18, 18, 0.5) !important;
+  background: rgba(18, 18, 18, 0.3) !important;
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
