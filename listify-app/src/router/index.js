@@ -7,6 +7,7 @@ const routes = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/playlists', name: 'playlists', component: Playlists },
   { path: "/player/:id", name: "player", component: PlayerView },
+  { path: "/liked-songs", name: "liked-songs", component: () => import("../pages/LikedSongs.vue") }
 ]
 
 const router = createRouter({

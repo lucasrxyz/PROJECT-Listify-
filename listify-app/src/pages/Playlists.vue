@@ -2,7 +2,7 @@
   <v-container fluid class="py-10">
     <v-row class="mb-4">
       <v-col>
-        <h1 class="text-h4 ml-5 mb-6">Current playlists</h1>
+        <h1 class="text-h4 ml-5 mb-2">Current playlists</h1>
         <p>
           <span 
             class="opacity-50 cursor-pointer ml-5" 
@@ -107,14 +107,15 @@
             <v-list-item
               v-for="(song, idx) in selectedPlaylist.songs"
               :key="song.id"
+              :ripple="false"
               @click="dsds(idx)"
               class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
             >
               <template #prepend>
-                <v-btn icon @click.stop="playSong(idx)" variant="plain" class="elevation-0 rounded-lg mr-5" density="comfortable">
+                <v-btn icon @click.stop="playSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-5" density="comfortable">
                   <v-icon>mdi-play</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="removeSong(idx)" variant="plain" class="elevation-0 rounded-lg mr-5" density="comfortable">
+                <v-btn icon @click.stop="removeSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-5" density="comfortable">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               
@@ -124,10 +125,19 @@
               </template>
             
               <v-list-item-content>
-                <v-list-item-title class="font-medium">
+                <v-list-item-title  class="font-medium">
                   <span class="mr-3">{{ song.title || 'Untitled' }}</span>
                   <span class="opacity-70 mr-4">{{ song.artist || 'Random artist' }}</span>
                   <span class="opacity-50">{{ song.duration || '0:00' }}</span>
+                  <v-icon
+                    class="mr-10 float-right cursor-pointer transition-all"
+                    :color="isLiked(song) ? 'niceColor' : 'grey'"
+                    @mouseenter="hoveredHeart = song.id"
+                    @mouseleave="hoveredHeart = null"
+                    @click.stop="toggleLike(song)"
+                    variant="text">
+                    {{isLiked(song)? 'mdi-heart': (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline')}}
+                  </v-icon>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -222,6 +232,28 @@ const musicStyles = [
 const hoverHome = ref(false)
 const hoverPlaylists = ref(false)
 
+const hoveredHeart = ref(null);
+
+const likedSongs = ref([]);
+// Charger les songs likées depuis localStorage
+onMounted(() => {
+  const saved = localStorage.getItem("likedSongs");
+  if (saved) likedSongs.value = JSON.parse(saved);
+});
+function toggleLike(song) {
+  const index = likedSongs.value.findIndex(s => s.id === song.id);
+  if (index !== -1) {
+    likedSongs.value.splice(index, 1);
+  } else {
+    likedSongs.value.push(song);
+  }
+  localStorage.setItem("likedSongs", JSON.stringify(likedSongs.value));
+}
+
+// Vérifie si une song est likée
+function isLiked(song) {
+  return likedSongs.value.some(s => s.id === song.id);
+} 
 function href(path) {
   window.location.href = path
 }

@@ -5,9 +5,9 @@
       <!-- Zone boutons + titre -->
       <div class="d-flex align-center justify-space-between w-100 px-6 mb-2" style="height: 70px;">
         <!-- Zone gauche : titre + artiste -->
-        <v-card flat variant="tonal" class="d-flex rounded-lg flex-column justify-center pa-1" style="width: 260px;">
-          <v-card-title class="text-subtitle-1 ml-2 pa-0">
-            {{ currentSong ? currentSong.title : 'No song played' }}
+        <v-card variant="text" width="400" class="d-flex rounded-lg flex-column justify-center pa-1" style="width: 320px; background-color: transparent;">
+          <v-card-title  class="text-subtitle-1 ml-2 pa-0">
+            <v-icon class="text-subtitle-1 mb-1 mr-1" color="niceColor">mdi-headphones</v-icon>{{ currentSong ? currentSong.title : 'No song played' }}
           </v-card-title>
           <v-card-subtitle class="text-caption ml-2 pa-0">
             {{ currentSong ? currentSong.artist : '' }}
@@ -33,6 +33,15 @@
             :icon="repeatIcon"
             :ripple="false"
           ></v-btn>
+
+          <v-card variant="tonal" width="190" height="43" loading class="d-flex flex-column rounded-lg" style="padding-top:2px;">
+            <v-card-title class="text-subtitle-2 ml-2 pa-0">
+              <b>Next</b><v-icon class="text-subtitle-1 mb-1 mr-1">mdi-play</v-icon>{{ nextSong.title || 'Cool song' }}
+            </v-card-title>
+            <v-card-subtitle class="text-caption ml-2 pa-0">
+              {{ nextSong.artist || 'Cool artist' }}
+            </v-card-subtitle>
+          </v-card>
         </div>
 
         <!-- Zone droite : contrôle du volume -->
@@ -261,5 +270,8 @@ function prevSong() {
 }
 .volume-slider {
   --v-slider-track-size: 3px;
+}
+.couleur {
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 </style>

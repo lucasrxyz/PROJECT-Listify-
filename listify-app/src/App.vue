@@ -22,9 +22,9 @@
           />
 
           <v-spacer></v-spacer>
-          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus" @click="windowMinimize"></v-btn>
-          <v-btn size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline" @click="windowMaximize"></v-btn>
-          <v-btn style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close" @click="windowClose"></v-btn>
+          <v-btn :ripple="false" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus" @click="windowMinimize"></v-btn>
+          <v-btn :ripple="false" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline" @click="windowMaximize"></v-btn>
+          <v-btn :ripple="false" style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close" @click="windowClose"></v-btn>
           <br />
         </v-app-bar>
 
@@ -126,7 +126,7 @@ html, body, #app {
   -webkit-app-region: no-drag; /* ⬅️ Les boutons restent cliquables */
 }
 /* --- Effet “verre” subtil sur tout le contenu --- */
-.v-card,
+
 .v-container,
 .v-list,
 .v-navigation-drawer {
