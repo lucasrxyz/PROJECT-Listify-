@@ -34,13 +34,34 @@
             :ripple="false"
           ></v-btn>
 
-          <v-card variant="tonal" width="190" height="43" loading class="d-flex flex-column rounded-lg" style="padding-top:2px;">
+          <v-card
+            variant="tonal"
+            width="190"
+            height="45"
+            class="d-flex flex-column rounded-lg transition-all position-relative"
+            :style="{
+              paddingTop: '2px',
+              opacity: showNextCard ? 1 : 0,
+              transition: 'opacity 0.6s ease'
+            }"
+          >
             <v-card-title class="text-subtitle-2 ml-2 pa-0">
-              <b>Next</b><v-icon class="text-subtitle-1 mb-1 mr-1">mdi-play</v-icon>{{ nextSong.title || 'Cool song' }}
+              <b>Next</b>
+              <v-icon class="text-subtitle-1 mr-1" style="margin-bottom:2px;">mdi-play</v-icon>
+              {{ nextSongPreview.title || '...' }}
             </v-card-title>
             <v-card-subtitle class="text-caption ml-2 pa-0">
-              {{ nextSong.artist || 'Cool artist' }}
+              {{ nextSongPreview.artist || '' }}
             </v-card-subtitle>
+          
+            <!-- mini barre de progression interne -->
+            <v-progress-linear
+              :model-value="nextCardProgress"
+              height="3"
+              color="niceColor"
+              rounded
+              class="position-absolute bottom-0 left-0 w-100"
+            ></v-progress-linear>
           </v-card>
         </div>
 
@@ -98,6 +119,11 @@ let ytPlayer = null
 let ytApiReady = false
 let playerReady = false
 let skipInProgress = false
+
+const showNextCard = ref(false)
+const nextCardLoading = ref(false)
+const nextCardProgress = ref(0)
+const nextSongPreview = ref({})
 
 watch(currentSong, (newSong, oldSong) => {
   if (!newSong || !playerReady) return
@@ -208,6 +234,8 @@ function loadVideoById(youtubeId, autoplay = true) {
     ytPlayer.loadVideoById(youtubeId)
     if (autoplay) ytPlayer.playVideo()
     ytPlayer.setVolume(volume.value)
+    showNextCard.value = false
+    nextCardProgress.value = 0
   } catch (e) {
     console.error('YT load error', e)
   }
@@ -237,14 +265,44 @@ function startProgressTimer() {
     if (!ytPlayer || typeof ytPlayer.getDuration !== 'function') return
     const duration = ytPlayer.getDuration()
     const current = ytPlayer.getCurrentTime()
+
     if (duration > 0) {
       progressPercent.value = Math.min((current / duration) * 100, 100)
+
+      // 👇 Affiche la carte 8 secondes avant la fin
+      const timeLeft = duration - current
+      if (timeLeft <= 8) {
+        if (!showNextCard.value) {
+          showNextCard.value = true
+          nextCardProgress.value = 0
+          updateNextSongPreview()
+        }
+      
+        // progression de 0 → 100% sur les 8 dernières secondes
+        const progress = Math.min(((8 - timeLeft) / 8) * 100, 100)
+        nextCardProgress.value = progress
+      } else {
+        nextCardProgress.value = 0
+        showNextCard.value = false
+      }
     }
   }, 200)
 }
 
 function stopProgressTimer() {
   if (progressTimer) clearInterval(progressTimer)
+}
+function updateNextSongPreview() {
+  const playlistId = store.state.player.playlistId
+  const playlist = store.state.playlists.find(p => p.id === playlistId)
+  if (!playlist || !playlist.songs || playlist.songs.length === 0) {
+    nextSongPreview.value = {}
+    return
+  }
+
+  const currentIndex = store.state.player.songIndex || 0
+  const nextIndex = (currentIndex + 1) % playlist.songs.length
+  nextSongPreview.value = playlist.songs[nextIndex] || {}
 }
 
 // --- Controls ---
