@@ -6,10 +6,8 @@ function createWindow() {
     width: 1600,
     height: 925,
     resizable: true,
-    minWidth: 800,
-    minHeight: 450,
-    maxWidth: 1920,
-    maxHeight: 1080,
+    minWidth: 1280,
+    minHeight: 720,
     useContentSize: true,
     autoHideMenuBar: true, // ❌ Pas de menu Windows
     frame: false, // ❌ Pas de barre Windows
@@ -20,7 +18,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
     },
   })
-
+  win.setTitle('Listify')
   if (!app.isPackaged) {
     win.loadURL('http://localhost:5173')
   } else {

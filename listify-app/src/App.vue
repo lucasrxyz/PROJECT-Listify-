@@ -8,17 +8,18 @@
 
       <!-- Contenu principal -->
       <v-main class="transparent-main">
-        <v-app-bar :elevation="0" height="80" app density="compact" class="transparent-bar">
+        <v-app-bar :elevation="0" height="65" app density="compact" class="transparent-bar">
           <v-spacer></v-spacer>
           <v-text-field
             placeholder="Search"
             variant="outlined"
             density="compact"
+            size="x-small"
             rounded="lg"
             hide-details
             prepend-inner-icon="mdi-magnify"
-            class="mx-auto ml-2 mt-2"
-            style="max-width: 400px; width: 50%;"
+            class="mx-auto ml-2"
+            style="max-width: 400px; width: 50%;margin-bottom:1px;"
           />
 
           <v-spacer></v-spacer>
@@ -113,7 +114,6 @@ html, body, #app {
 .transparent-main {
   background: rgba(18, 18, 18, 0.2) !important;
   backdrop-filter: blur(10px);
-  border-radius:24px !important;
 }
 
 .transparent-bar {
