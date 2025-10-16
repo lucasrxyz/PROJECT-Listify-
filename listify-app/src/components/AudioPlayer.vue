@@ -5,14 +5,46 @@
       <!-- Zone boutons + titre -->
       <div class="d-flex align-center justify-space-between w-100 px-6 mb-2" style="height: 70px;">
         <!-- Zone gauche : titre + artiste -->
-        <v-card variant="text" width="400" class="d-flex rounded-lg flex-column justify-center pa-1" style="width: 320px; background-color: transparent;">
-          <v-card-title  class="text-subtitle-1 ml-2 pa-0">
-            <v-icon class="text-subtitle-1 mb-1 mr-1" color="niceColor">mdi-headphones</v-icon>{{ currentSong ? currentSong.title : 'No song played' }}
-          </v-card-title>
-          <v-card-subtitle class="text-caption ml-2 pa-0">
-            {{ currentSong ? currentSong.artist : '' }}
-          </v-card-subtitle>
+        <v-card
+          variant="text"
+          class="d-flex align-center rounded-lg pa-1"
+          style="width: 320px; background-color: rgb(255, 255, 255, 0.035);"
+        >
+          <div
+            class="d-flex align-center"
+            style="width: 48px; height: 48px; flex-shrink: 0; margin-right: 12px;"
+          >
+            <v-img
+              v-if="currentThumbnail"
+              :src="currentThumbnail"
+              width="48"
+              height="48"
+              class="rounded-lg"
+              cover
+            ></v-img>
+          </div>
+        
+          <!-- Infos musique -->
+          <div
+            class="d-flex flex-column justify-center"
+            style="overflow: hidden; min-width: 0;"
+          >
+            <v-card-title
+              class="text-subtitle-1 pa-0 text-truncate"
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            >
+              {{ currentSong ? currentSong.title : '' }}
+            </v-card-title>
+            <v-card-subtitle
+              class="text-caption pa-0 text-truncate"
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            >
+              {{ currentSong ? currentSong.artist : '' }}
+            </v-card-subtitle>
+          </div>
         </v-card>
+
+
 
         <!-- Zone centrale : boutons -->
         <div class="d-flex align-center justify-center">
@@ -111,6 +143,10 @@ const store = useStore()
 const currentSong = computed(() => store.getters.currentSong)
 const isPlaying = computed(() => store.state.player.isPlaying)
 const repeatMode = computed(() => store.state.player.repeatMode)
+const currentThumbnail = computed(() => {
+  if (!currentSong.value || !currentSong.value.youtubeId) return ''
+  return `https://img.youtube.com/vi/${currentSong.value.youtubeId}/hqdefault.jpg`
+})
 
 const progressPercent = ref(0)
 const volume = ref(parseInt(localStorage.getItem('player_volume')) || 80) // volume par défaut à 80
