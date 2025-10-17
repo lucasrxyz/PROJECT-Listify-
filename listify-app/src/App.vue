@@ -105,7 +105,7 @@ html, body, #app {
 
 /* 🌙 --- LAYOUT TRANSPARENT --- */
 .transparent-layout {
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px),;
   background: rgba(18, 18, 18, 0.3);
   position: relative;
   z-index: 0;
