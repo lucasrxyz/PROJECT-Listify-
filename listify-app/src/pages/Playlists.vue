@@ -37,7 +37,7 @@
           class="rounded-lg"
           style="max-height: 588px; overflow-y: auto;">
           <v-list-item
-            v-for="pl in playlists"
+            v-for="pl in playlists.filter(p => p.name.name && p.name.name.trim() !== '')"
             :key="pl.id"
             :class="{ 'primary--text': selectedPlaylist && selectedPlaylist.id === pl.id }"
             @click="selectPlaylist(pl)"
@@ -147,22 +147,118 @@
     </v-row>
 
     <!-- Add song dialog -->
-    <v-dialog v-model="addSongDialog"  max-width="600">
-      <v-card style="border-radius:18px;">
-        <v-card-title>Add a YouTube URL</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="newSongUrl" label="YouTube link (https://youtube.com/watch?v=...)" />
-          <v-text-field v-model="newSongTitle" label="Title (optional)" />
-          <v-text-field v-model="newSongArtist" label="Artist (optional)" />
-          <p style="opacity:0.7; font-size: 0.9em;">Supported URL forms: youtube.com/watch?v=VIDEOID or youtu.be/VIDEOID or embed links.</p>
+    <v-dialog v-model="addSongDialog" max-width="600" style="backdrop-filter: blur(4px);">
+      <v-badge location="top" width="auto" class="rounded-xl" height="auto" color="transparent">
+      <template #badge>
+      <span
+          style="
+          font-size: 1.05rem;
+          font-weight: 500;
+          color: white;
+          background: linear-gradient(135deg, rgba(231, 81, 238, 0.6), rgba(52, 47, 127, 0.45));
+          padding: 3px 20px 3px 20px;
+          border-radius: 14px;
+          display: inline-flex;
+          align-items: center;">
+        <v-icon
+          style="font-size: 24px; margin-bottom: 2px; margin-right: 8px;"
+        >
+          mdi-youtube
+        </v-icon>
+        Add a YouTube URL
+      </span>
+      </template>
+      <v-card style="border-radius:18px; background-color: rgba(0, 0, 0, 0.8) !important;">
+
+        <v-card-text class="px-5 pb-0 mt-2">
+          <!-- URL -->
+          <v-text-field
+            v-model="newSongUrl"
+            prepend-inner-icon="mdi-youtube"
+            density="compact"
+            variant="outlined"
+            placeholder="YouTube link (https://youtube.com/watch?v=...)"
+            class="mb-3"
+          />
+
+          <!-- Preview musique -->
+          <v-card
+            v-if="newSongTitle || newSongArtist || currentThumbnail"
+            variant="text"
+            class="d-flex pa-1 rounded-lg"
+            style="background-color: rgb(255, 255, 255, 0.035);"
+          >
+            <div
+              style="width: 48px; height: 48px; flex-shrink: 0; margin-right: 12px;"
+            >
+              <!-- Image si dispo -->
+              <v-img
+                v-if="currentThumbnail"
+                :src="currentThumbnail"
+                width="48"
+                height="48"
+                class="rounded-lg"
+                cover
+              ></v-img>
+
+              <!-- Placeholder si pas d’image -->
+              <div
+                v-else
+                class="rounded-lg d-flex align-center justify-center"
+                style="background-color: rgba(255,255,255,0.05); width:48px; height:48px;"
+              >
+                <v-icon color="grey" size="20">mdi-music-note</v-icon>
+              </div>
+            </div>
+
+            <!-- Infos musique -->
+            <div style="overflow: hidden; min-width: 0;">
+              <v-card-title
+                class="text-subtitle-1 pa-0 text-truncate"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              >
+                {{ newSongTitle || 'Song title' }}
+              </v-card-title>
+              <v-card-subtitle
+                class="text-caption pa-0 text-truncate"
+                style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              >
+                {{ newSongArtist || 'Artist' }}
+              </v-card-subtitle>
+            </div>
+          </v-card>
+
+          <!-- Info alert -->
+          <v-alert
+            type="info"
+            variant="tonal"
+            density="compact"
+            class="mt-4 mb-3 rounded-lg px-3 py-2 text-white"
+            style="background-color: rgba(255,255,255, 0.03);"
+            color="#2a2a2a"
+          >
+            <template #prepend>
+              <v-icon size="18" class="mr-1" color="grey lighten-2">
+                mdi-information-outline
+              </v-icon>
+            </template>
+            <span style="opacity:0.7; font-size:0.85em;">
+              Supported URL forms:
+              <strong>youtube.com/watch?v=VIDEOID</strong>,
+              <strong>youtu.be/VIDEOID</strong> or embed links.
+            </span>
+          </v-alert>
         </v-card-text>
-        <v-card-actions>
+
+        <v-card-actions class="px-5 pb-4">
           <v-spacer></v-spacer>
           <v-btn text @click="addSongDialog = false">Cancel</v-btn>
-          <v-btn text @click="confirmAddSong">Add</v-btn>
+          <v-btn color="niceColor" variant="tonal" @click="confirmAddSong">Add</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-badge>
+</v-dialog>
+
   </v-container>
 <v-dialog v-model="newPlaylistDialog" max-width="400" max-height="300">
   <v-card style="border-radius:18px;">
@@ -233,13 +329,22 @@ const hoverHome = ref(false)
 const hoverPlaylists = ref(false)
 
 const hoveredHeart = ref(null);
+const currentThumbnail = computed(() => {
+  if (!newSongUrl.value) return null
 
+  // Récupère l’ID de la vidéo (regex compatible watch?v=, youtu.be/, embed/)
+  const match = newSongUrl.value.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/)
+  if (!match) return null
+
+  return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
+})
 const likedSongs = ref([]);
 // Charger les songs likées depuis localStorage
 onMounted(() => {
   const saved = localStorage.getItem("likedSongs");
   if (saved) likedSongs.value = JSON.parse(saved);
 });
+
 function toggleLike(song) {
   const index = likedSongs.value.findIndex(s => s.id === song.id);
   if (index !== -1) {
@@ -407,7 +512,14 @@ async function confirmAddSong() {
 
 
 // --- Play / remove ---
-function playSong(index) { store.dispatch('playSong', { playlistId: selectedPlaylist.value.id, index }) }
+function playSong(index) {
+  store.dispatch('playSong', { playlistId: selectedPlaylist.value.id, index })
+    .then(song => {
+      if (song) {
+        store.commit('addToRecentlyPlayed', song)
+      }
+    })
+}
 function playAll() { if (!selectedPlaylist.value?.songs.length) return; store.dispatch('playSong', { playlistId: selectedPlaylist.value.id, index: 0 }) }
 function removeSong(idx) {
   if (!selectedPlaylist.value) return
@@ -519,3 +631,5 @@ onMounted(() => {
   }
 })
 </script>
+<style scoped>
+</style>

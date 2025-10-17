@@ -61,6 +61,9 @@ html, body, #app {
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;     /* IE/Edge */
 }
 *::-webkit-scrollbar {
   display: none;

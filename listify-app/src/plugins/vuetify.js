@@ -33,5 +33,11 @@ export default createVuetify({
         fontFamily: 'Arial, sans-serif', // Police globale
       },
     },
+    VBtn: {
+      ripple: false, // désactive l’effet ripple pour tous les boutons
+    },
+    VListItem: {
+      ripple: false, // désactive l’effet ripple pour les items de liste
+    },
   },
 })

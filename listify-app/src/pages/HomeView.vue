@@ -3,7 +3,7 @@
     <!-- 🔹 En-tête -->
     <v-row class="mb-4">
       <v-col>
-        <h1 class="text-h4 ml-5 mb-2">Good morning</h1>
+        <h1 class="text-h4 ml-5 mb-2">{{ greeting }}</h1>
         <p>
           <span
             class="opacity-50 cursor-pointer ml-5"
@@ -63,7 +63,7 @@
           style="max-height: 500px; overflow-y: auto;"
         >
           <v-list-item
-            v-for="(song, idx) in selectedPlaylist?.songs || []"
+            v-for="(song, idx) in recentSongs"
             :key="song.id || idx"
             class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
             @click="selectSong(idx)"
@@ -123,7 +123,18 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-alert
+          v-if="recentSongs.length === 0"
+          type="info"
+          color="niceColor"
+          class="rounded-lg ma-4"
+          density="compact"
+          variant="text"
+        >
+          You haven't played any songs recently.
+        </v-alert>
         </v-list>
+        
       </v-col>
     </v-row>
 
@@ -183,6 +194,20 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
+const greeting = ref('')
+
+function updateGreeting() {
+  const hour = new Date().getHours()
+  console.log('Current hour:', hour)
+  if (hour < 12) greeting.value = 'Good morning'
+  else if (hour < 18) greeting.value = 'Good afternoon'
+  else if (hour < 22) greeting.value = 'Good evening'
+  else greeting.value = 'Good night'
+}
+
+// On exécute au chargement
+updateGreeting()
+setInterval(updateGreeting, 60 * 1000) // vérifie chaque minute
 // ---------------------- //
 // 🌟 Setup Vuex + data
 // ---------------------- //
@@ -193,7 +218,7 @@ const hoveredHeart = ref(null)
 
 const hoverShowAll = ref(false)
 // Simulation de playlist
-const selectedPlaylist = computed(() => store.state.playlists?.[0] || { songs: [] })
+const recentSongs = computed(() => store.state.recentlyPlayed.slice(0, 5))
 
 // Simulation d’artistes
 const recentArtists = ref([
@@ -210,9 +235,10 @@ function href(path) {
 }
 
 function playSong(idx) {
-  console.log('▶️ Play song index', idx)
+  const song = recentSongs.value[idx]
+  if (!song) return
+  store.dispatch('playSongDirectly', song)
 }
-
 function removeSong(idx) {
   console.log('🗑️ Remove song index', idx)
 }

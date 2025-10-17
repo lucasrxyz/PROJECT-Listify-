@@ -7,8 +7,13 @@
         <!-- Zone gauche : titre + artiste -->
         <v-card
           variant="text"
-          class="d-flex align-center rounded-lg pa-1"
-          style="width: 320px; background-color: rgb(255, 255, 255, 0.035);"
+          class="d-flex align-center rounded-lg pa-1 transition-all"
+          :style="{
+            width: '320px',
+            backgroundColor: 'rgba(255,255,255,0.035)',
+            opacity: currentSong ? 1 : 0,
+            transition: 'opacity 0.4s ease'
+          }"
         >
           <div
             class="d-flex align-center"
@@ -112,7 +117,6 @@
             hide-details
             thumb-size="0"
             track-size="3"
-            thumb-label="off"
             style="width: 150px;"
           ></v-slider>
         </div>

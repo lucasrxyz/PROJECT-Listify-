@@ -1,6 +1,25 @@
 import { createStore } from 'vuex'
 
 const LS_KEY = 'listify_playlists_v1'
+const HISTORY_KEY = 'listify_recently_played_v1'
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch (e) {
+    console.error('Failed to load recently played', e)
+    return []
+  }
+}
+
+function saveHistory(history) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
+  } catch (e) {
+    console.error('Failed to save recently played', e)
+  }
+}
 
 function loadPlaylists() {
   try {
@@ -23,6 +42,7 @@ function savePlaylists(playlists) {
 export default createStore({
   state: {
     playlists: loadPlaylists(), // array { id, name, songs: [{ id, title, artist, youtubeId, url }] }
+    recentlyPlayed: loadHistory(),
     player: {
       playlistId: null,    // id of playlist being played
       songIndex: 0,        // index inside playlist.songs
@@ -41,6 +61,20 @@ export default createStore({
     }
   },
   mutations: {
+    addToRecentlyPlayed(state, track) {
+    // On évite les doublons en filtrant le son s’il est déjà là
+    state.recentlyPlayed = [
+      track,
+      ...state.recentlyPlayed.filter(t => t.id !== track.id)
+    ]
+
+    // On limite à 5 éléments
+    if (state.recentlyPlayed.length > 5) {
+      state.recentlyPlayed = state.recentlyPlayed.slice(0, 5)
+    }
+
+    saveHistory(state.recentlyPlayed)
+  },
     SET_PLAYLISTS(state, playlists) {
       state.playlists = playlists
       savePlaylists(state.playlists)
@@ -58,6 +92,13 @@ export default createStore({
         state.player.songIndex = 0
         state.player.isPlaying = false
       }
+    },
+    PLAYER_SET_CURRENT_SONG(state, song) {
+      state.currentSong = song
+    },
+    ADD_TO_RECENTLY_PLAYED(state, song) {
+      // On garde max 20 derniers sons
+      state.recentlyPlayed = [song, ...state.recentlyPlayed.filter(s => s.id !== song.id)].slice(0, 20)
     },
     ADD_SONG_TO_PLAYLIST(state, { playlistId, song }) {
       const pl = state.playlists.find(p => p.id === playlistId)
@@ -99,16 +140,53 @@ export default createStore({
     deletePlaylist({ commit }, playlistId) {
       commit('REMOVE_PLAYLIST', playlistId)
     },
-    addSong({ commit }, { playlistId, song }) {
-      // song: { id, title, artist, youtubeId, url }
-      commit('ADD_SONG_TO_PLAYLIST', { playlistId, song })
+    playSongDirectly({ commit, state }, song) {
+      // Crée playlist "recent" si nécessaire
+      let recentPlaylist = state.playlists.find(p => p.id === 'recent')
+      if (!recentPlaylist) {
+        commit('ADD_PLAYLIST', { id: 'recent', name: 'Recently Played', songs: [] })
+        recentPlaylist = state.playlists.find(p => p.id === 'recent')
+      }
+    
+      // Ajoute la chanson si elle n'y est pas
+      if (!recentPlaylist.songs.find(s => s.id === song.id)) {
+        commit('ADD_SONG_TO_PLAYLIST', { playlistId: 'recent', song })
+      }
+    
+      const songIndex = recentPlaylist.songs.findIndex(s => s.id === song.id)
+    
+      // ⚡ Si la chanson est déjà en train de jouer dans le player, on ne fait que s'assurer que c'est en lecture
+      if (state.player.playlistId === 'recent' && state.player.songIndex === songIndex) {
+        commit('PLAYER_SET_PLAYING', true) // force play
+      } else {
+        commit('PLAYER_SET_PLAYLIST', { playlistId: 'recent', songIndex })
+        commit('PLAYER_SET_PLAYING', true)
+      }
+    
+      // Ajouter à l'historique
+      commit('ADD_TO_RECENTLY_PLAYED', song)
+      commit('PLAYER_SET_PLAYING', true)
     },
-    removeSong({ commit }, payload) {
-      commit('REMOVE_SONG_FROM_PLAYLIST', payload)
-    },
-    playSong({ commit }, { playlistId, index = 0 }) {
+    playSong({ state, commit }, { playlistId, index = 0 }) {
+      // 1️⃣ On cherche la playlist correspondante
+      const playlist = state.playlists.find(p => p.id === playlistId)
+      if (!playlist || !playlist.songs || !playlist.songs[index]) {
+        console.warn('Song not found for playSong')
+        return
+      }
+    
+      // 2️⃣ On récupère la chanson à jouer
+      const song = playlist.songs[index]
+    
+      // 3️⃣ On applique les mutations existantes (lecture)
       commit('PLAYER_SET_PLAYLIST', { playlistId, songIndex: index })
       commit('PLAYER_SET_PLAYING', true)
+    
+      // 4️⃣ On ajoute la chanson à l’historique (recentlyPlayed)
+      commit('addToRecentlyPlayed', song)
+    
+      // 5️⃣ On retourne la chanson au cas où tu veux la manipuler ailleurs
+      return song
     },
     togglePlay({ commit, state }) {
       commit('PLAYER_SET_PLAYING', !state.player.isPlaying)
