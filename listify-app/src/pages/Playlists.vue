@@ -147,8 +147,8 @@
     </v-row>
 
     <!-- Add song dialog -->
-    <v-dialog v-model="addSongDialog" max-width="600">
-      <v-card>
+    <v-dialog v-model="addSongDialog"  max-width="600">
+      <v-card style="border-radius:18px;">
         <v-card-title>Add a YouTube URL</v-card-title>
         <v-card-text>
           <v-text-field v-model="newSongUrl" label="YouTube link (https://youtube.com/watch?v=...)" />
@@ -165,7 +165,7 @@
     </v-dialog>
   </v-container>
 <v-dialog v-model="newPlaylistDialog" max-width="400" max-height="300">
-  <v-card class="rounded-lg">
+  <v-card style="border-radius:18px;">
     <v-card-text>
       <v-text-field
         v-model="newPlaylistName"
@@ -325,26 +325,86 @@ function extractYouTubeId(url) {
   const m = url.match(/[A-Za-z0-9_-]{11}/)
   return m ? m[0] : null
 }
-
+async function fetchYouTubeMetadataNoembed(videoUrlOrId) {
+  try {
+    // Accepte soit l'URL complète soit juste l'ID
+    let url
+    if (/^[A-Za-z0-9_-]{11}$/.test(videoUrlOrId)) {
+      url = `https://www.youtube.com/watch?v=${videoUrlOrId}`
+    } else {
+      url = videoUrlOrId
+    }
+    const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`)
+    if (!res.ok) throw new Error('noembed error')
+    const json = await res.json()
+    // noembed returns fields: title, author_name, etc.
+    return {
+      title: json.title || null,
+      artist: json.author_name || null
+    }
+  } catch (err) {
+    // silent fail -> on renverra nulls
+    console.warn('noembed failed', err)
+    return { title: null, artist: null }
+  }
+}
 // --- Ajouter chanson ---
-function confirmAddSong() {
-  if (!selectedPlaylist.value) { alert('Select a playlist first.'); return }
+async function confirmAddSong() {
+  if (!selectedPlaylist.value) { 
+    alert('Select a playlist first.'); 
+    return; 
+  }
+
   const ytId = extractYouTubeId(newSongUrl.value)
-  if (!ytId) { alert('Impossible d\'extraire l\'ID YouTube.'); return }
+  if (!ytId) { 
+    alert('Impossible d\'extraire l\'ID YouTube.'); 
+    return; 
+  }
+
+  // valeurs utilisateur (peuvent être vides)
+  let title = newSongTitle.value.trim()
+  let artist = newSongArtist.value.trim()
+
+  // Si manque titre ou artiste -> on essaye noembed
+  if (!title || !artist) {
+    const metadata = await fetchYouTubeMetadataNoembed(ytId)
+    if (metadata) {
+      if (!title && metadata.title) {
+        // on nettoie un peu le titre retourné (supprime " - YouTube" si présent)
+        title = metadata.title.replace(/\s*[-|]\s*YouTube$/i, '').trim()
+      }
+      if (!artist && metadata.artist) {
+        artist = metadata.artist.trim()
+      }
+
+      // heuristique : si titre contient "Artist - Song", séparer
+      if (!artist && title && title.includes(' - ')) {
+        const parts = title.split(' - ')
+        if (parts.length >= 2) {
+          artist = parts[0].trim()
+          title = parts.slice(1).join(' - ').trim()
+        }
+      }
+    }
+  }
 
   const song = {
     id: Date.now().toString(),
-    title: newSongTitle.value || `YouTube ${ytId}`,
-    artist: newSongArtist.value || '',
+    title: title || `YouTube ${ytId}`,
+    artist: artist || 'Unknown artist',
     youtubeId: ytId,
     url: newSongUrl.value
   }
 
+  // dispatch vers le store (comme avant) — le store sauvegardera le bon titre
   store.dispatch('addSong', { playlistId: selectedPlaylist.value.id, song })
+
   const updated = store.state.playlists.find(p => p.id === selectedPlaylist.value.id)
   selectedPlaylist.value = JSON.parse(JSON.stringify(updated))
   addSongDialog.value = false
 }
+
+
 
 // --- Play / remove ---
 function playSong(index) { store.dispatch('playSong', { playlistId: selectedPlaylist.value.id, index }) }
@@ -418,6 +478,37 @@ watch(() => store.state.playlists, (newVal) => {
   const pl = newVal.find(p => p.id === selectedPlaylist.value.id)
   selectedPlaylist.value = pl || null
 }, { deep: true })
+watch(newSongUrl, async (val) => {
+  if (!val) {
+    newSongTitle.value = ''
+    newSongArtist.value = ''
+    return
+  }
+
+  const ytId = extractYouTubeId(val)
+  if (!ytId) return
+
+  // tentative rapide : si les champs sont vides, on récupère metadata
+  if (!newSongTitle.value.trim() || !newSongArtist.value.trim()) {
+    const meta = await fetchYouTubeMetadataNoembed(ytId)
+    if (meta) {
+      if (!newSongTitle.value.trim() && meta.title) {
+        newSongTitle.value = meta.title.replace(/\s*[-|]\s*YouTube$/i, '').trim()
+      }
+      if (!newSongArtist.value.trim() && meta.artist) {
+        newSongArtist.value = meta.artist.trim()
+      }
+      // heuristique split "Artist - Title"
+      if (!newSongArtist.value && newSongTitle.value.includes(' - ')) {
+        const parts = newSongTitle.value.split(' - ')
+        if (parts.length >= 2) {
+          newSongArtist.value = parts[0].trim()
+          newSongTitle.value = parts.slice(1).join(' - ').trim()
+        }
+      }
+    }
+  }
+})
 
 // --- Sélection via route ---
 onMounted(() => {

@@ -31,7 +31,7 @@ body::before {
 
 .v-list-item:hover {
   background-color: rgba(255, 255, 255, 0.08) !important;
-  transform: scale(1.01);
+  transform: scale(1.003);
   transition: ease-in-out .2s;
 }
 /* --- Boutons --- */

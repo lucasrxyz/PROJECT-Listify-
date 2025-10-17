@@ -9,21 +9,25 @@ function createWindow() {
     minWidth: 1280,
     minHeight: 720,
     useContentSize: true,
-    autoHideMenuBar: true, // ❌ Pas de menu Windows
-    frame: false, // ❌ Pas de barre Windows
-    transparent: false, // peut être true si tu veux que le fond soit transparent
-    roundedCorners: true, // ✅ Coins arrondis (Win11/macOS)
-    backgroundColor: '#181818', // ton fond d’app pour éviter le flash blanc
+    autoHideMenuBar: true,
+    frame: false,
+    transparent: false,
+    roundedCorners: true,
+    backgroundColor: '#181818',
+    icon: path.join(__dirname, '../src/assets/listify_logo.png'), // 🧩 AJOUT ICI
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
     },
   })
+
   win.setTitle('Listify')
+
   if (!app.isPackaged) {
     win.loadURL('http://localhost:5173')
   } else {
     win.loadFile(path.join(__dirname, '../dist/index.html'))
   }
+
   win.center()
 
   // 🧠 GESTION DES COMMANDES DE FENÊTRE
