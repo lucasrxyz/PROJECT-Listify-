@@ -36,23 +36,23 @@
       </v-col>
     </v-row>
 
-    <!-- 🌈 Recently Played (playlist) -->
+    <!-- Recently Played (playlist) -->
     <v-row class="px-5 mt-2">
       <v-col cols="12">
         <div 
           class="d-flex align-center justify-space-between mb-4 pb-2" 
           style="border-bottom:1px solid rgba(255,255,255,0.1)"
         >
-          <h2 class="text-h5 mb-0">Recently Played</h2>
-          <span
-            class="opacity-50 text-white cursor-pointer text-subtitle-2"
-            @click="$router.push('/recently-played')"
-            @mouseover="hoverShowAll = true"
-            @mouseleave="hoverShowAll = false"
-            :class="hoverShowAll ? 'text-decoration-underline' : ''"
-          >
-            Show all
-          </span>
+          <h2 class="text-h5 mb-0">
+            Recently Played
+            <v-btn class="ml-3 mb-1" variant="outlined" @click="playAll">
+              <b><v-icon class="mr-3" style="margin-bottom:2px;">mdi-play</v-icon>Play all</b>
+            </v-btn>
+          </h2>
+          
+          <v-btn variant="text" 
+          class="opacity-50 text-white cursor-pointer text-subtitle-2 float-right" 
+          @click="$router.push('/recently-played')">Show all</v-btn>
         </div>
       </v-col>
 
@@ -74,20 +74,10 @@
                   icon
                   @click.stop="playSong(idx)"
                   variant="plain"
-                  class="elevation-0 rounded-lg mr-2"
+                  class="elevation-0 rounded-lg mr-5"
                   density="comfortable"
                 >
                   <v-icon>mdi-play</v-icon>
-                </v-btn>
-
-                <v-btn
-                  icon
-                  @click.stop="removeSong(idx)"
-                  variant="plain"
-                  class="elevation-0 rounded-lg mr-2"
-                  density="comfortable"
-                >
-                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
 
                 <v-avatar size="56" rounded="lg" class="mr-3">
@@ -111,10 +101,10 @@
                 <v-icon
                   class="cursor-pointer transition-all"
                   :color="isLiked(song) ? 'niceColor' : 'grey'"
+                  :class="{ 'scale-115': hoveredHeart === song.id }"
                   @mouseenter="hoveredHeart = song.id"
                   @mouseleave="hoveredHeart = null"
                   @click.stop="toggleLike(song)"
-                  variant="text"
                 >
                   {{ isLiked(song)
                     ? 'mdi-heart'
@@ -138,6 +128,97 @@
       </v-col>
     </v-row>
 
+    <!-- Recently Liked (playlist) -->
+    <v-row class="px-5 mt-2">
+      <v-col cols="12">
+        <div 
+          class="d-flex align-center justify-space-between mb-4 pb-2" 
+          style="border-bottom:1px solid rgba(255,255,255,0.1)"
+        >
+          <h2 class="text-h5 mb-0">
+            Recently Liked
+            <v-btn class="ml-3 mb-1" variant="outlined">
+              <b><v-icon class="mr-3" style="margin-bottom:2px;">mdi-play</v-icon>Play all</b>
+            </v-btn>
+          </h2>
+          
+          <v-btn variant="text" 
+          class="opacity-50 text-white cursor-pointer text-subtitle-2 float-right" 
+          @click="$router.push('/recently-played')">Show all</v-btn>
+        </div>
+      </v-col>
+
+      <v-col cols="12">
+        <v-list
+          two-line
+          class="rounded-lg scroll-hidden"
+          style="max-height: 500px; overflow-y: auto;"
+        >
+          <v-list-item
+            v-for="(song, idx) in likedSongs"
+            :key="song.id || idx"
+            class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
+            @click="selectSong(idx)"
+          >
+            <template #prepend>
+              <div class="d-flex align-center">
+                <v-btn
+                  icon
+                  @click.stop="playSong(idx)"
+                  variant="plain"
+                  class="elevation-0 rounded-lg mr-5"
+                  density="comfortable"
+                >
+                  <v-icon>mdi-play</v-icon>
+                </v-btn>
+
+                <v-avatar size="56" rounded="lg" class="mr-3">
+                  <v-img
+                    :src="`https://img.youtube.com/vi/${song.youtubeId}/mqdefault.jpg`"
+                    alt="Song thumbnail"
+                    cover
+                  />
+                </v-avatar>
+              </div>
+            </template>
+
+            <v-list-item-content>
+              <v-list-item-title class="font-medium d-flex align-center justify-space-between">
+                <div>
+                  <span class="mr-3">{{ song.title || 'Untitled' }}</span>
+                  <span class="opacity-70 mr-4">{{ song.artist || 'Unknown artist' }}</span>
+                  <span class="opacity-50">{{ song.duration || '0:00' }}</span>
+                </div>
+
+                <v-icon
+                  class="cursor-pointer transition-all"
+                  :color="isLiked(song) ? 'niceColor' : 'grey'"
+                  :class="{ 'scale-115': hoveredHeart === song.id }"
+                  @mouseenter="hoveredHeart = song.id"
+                  @mouseleave="hoveredHeart = null"
+                  @click.stop="toggleLike(song)"
+                >
+                  {{ isLiked(song)
+                    ? 'mdi-heart'
+                    : (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline') }}
+                </v-icon>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-alert
+          v-if="recentSongs.length === 0"
+          type="info"
+          color="niceColor"
+          class="rounded-lg ma-4"
+          density="compact"
+          variant="text"
+        >
+          You haven't liked any songs recently.
+        </v-alert>
+        </v-list>
+        
+      </v-col>
+    </v-row>
     <!-- 🎤 Recent Artists -->
     <v-row class="px-5 mt-12">
       <v-col cols="12">
@@ -219,6 +300,7 @@ const hoveredHeart = ref(null)
 const hoverShowAll = ref(false)
 // Simulation de playlist
 const recentSongs = computed(() => store.state.recentlyPlayed.slice(0, 5))
+const likedSongs = computed(() => store.state.likedSongs.slice(0, 5))
 
 // Simulation d’artistes
 const recentArtists = ref([
@@ -233,6 +315,24 @@ const recentArtists = ref([
 function href(path) {
   window.location.href = path
 }
+function playAll() {
+  const recent = store.state.recentlyPlayed
+  if (!recent.length) return
+
+  // On crée une playlist temporaire "recent" si besoin
+  let recentPlaylist = store.state.playlists.find(p => p.id === 'recent')
+  if (!recentPlaylist) {
+    store.commit('ADD_PLAYLIST', { id: 'recent', name: 'Recently Played', songs: [] })
+    recentPlaylist = store.state.playlists.find(p => p.id === 'recent')
+  }
+
+  // On synchronise les chansons récentes dans cette playlist
+  recentPlaylist.songs = recent
+
+  // On lance la lecture de la première chanson
+  store.dispatch('playSong', { playlistId: 'recent', index: 0 })
+}
+
 
 function playSong(idx) {
   const song = recentSongs.value[idx]
@@ -244,11 +344,11 @@ function removeSong(idx) {
 }
 
 function toggleLike(song) {
-  console.log('❤️ Toggle like', song.title)
+  store.dispatch('toggleLike', song)
 }
 
 function isLiked(song) {
-  return false // logique à compléter
+  return store.state.likedSongs.some(s => s.youtubeId === song.youtubeId)
 }
 
 function selectSong(idx) {
@@ -287,4 +387,9 @@ body {
 .scroll-hidden {
   scrollbar-width: none; /* Firefox */
 }
+.scale-115 {
+  transform: scale(1.15);
+  transition: transform 0.2s ease;
+}
+
 </style>

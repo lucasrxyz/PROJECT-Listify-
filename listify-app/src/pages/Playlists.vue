@@ -80,7 +80,7 @@
               <v-icon>mdi-shuffle</v-icon>
             </v-btn>
             <v-btn class="ml-2 mr-3 rounded-lg elevation-0" color="niceColor" variant="tonal" @click="playAll">
-              <v-icon class="mb-1 mr-2">mdi-play</v-icon>Play
+              <v-icon class="mr-3" style="margin-bottom:2px;">mdi-play</v-icon>Play
             </v-btn>
             <v-divider vertical class="flex-grow-1 mr-4"></v-divider>
 
@@ -112,7 +112,7 @@
               class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
             >
               <template #prepend>
-                <v-btn icon @click.stop="playSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-5" density="comfortable">
+                <v-btn icon @click.stop="playSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-3" density="comfortable">
                   <v-icon>mdi-play</v-icon>
                 </v-btn>
                 <v-btn icon @click.stop="removeSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-5" density="comfortable">
@@ -130,14 +130,17 @@
                   <span class="opacity-70 mr-4">{{ song.artist || 'Random artist' }}</span>
                   <span class="opacity-50">{{ song.duration || '0:00' }}</span>
                   <v-icon
-                    class="mr-10 float-right cursor-pointer transition-all"
-                    :color="isLiked(song) ? 'niceColor' : 'grey'"
-                    @mouseenter="hoveredHeart = song.id"
-                    @mouseleave="hoveredHeart = null"
-                    @click.stop="toggleLike(song)"
-                    variant="text">
-                    {{isLiked(song)? 'mdi-heart': (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline')}}
-                  </v-icon>
+                  class="cursor-pointer transition-all float-right mr-10"
+                  :color="isLiked(song) ? 'niceColor' : 'grey'"
+                  :class="{ 'scale-115': hoveredHeart === song.id }"
+                  @mouseenter="hoveredHeart = song.id"
+                  @mouseleave="hoveredHeart = null"
+                  @click.stop="toggleLike(song)"
+                >
+                  {{ isLiked(song)
+                    ? 'mdi-heart'
+                    : (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline') }}
+                </v-icon>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -165,7 +168,7 @@
         >
           mdi-youtube
         </v-icon>
-        Add a YouTube URL
+        Add a new song with a YouTube link
       </span>
       </template>
       <v-card style="border-radius:18px; background-color: rgba(0, 0, 0, 0.8) !important;">
@@ -260,8 +263,8 @@
 </v-dialog>
 
   </v-container>
-<v-dialog v-model="newPlaylistDialog" max-width="400" max-height="300">
-  <v-card style="border-radius:18px;">
+<v-dialog v-model="newPlaylistDialog" max-width="400" max-height="300" style="backdrop-filter: blur(4px);">
+  <v-card style="border-radius:18px; background-color: rgba(0, 0, 0, 0.8) !important;">
     <v-card-text>
       <v-text-field
         v-model="newPlaylistName"
@@ -346,19 +349,14 @@ onMounted(() => {
 });
 
 function toggleLike(song) {
-  const index = likedSongs.value.findIndex(s => s.id === song.id);
-  if (index !== -1) {
-    likedSongs.value.splice(index, 1);
-  } else {
-    likedSongs.value.push(song);
-  }
-  localStorage.setItem("likedSongs", JSON.stringify(likedSongs.value));
+  store.dispatch('toggleLike', song)
 }
 
 // Vérifie si une song est likée
 function isLiked(song) {
-  return likedSongs.value.some(s => s.id === song.id);
-} 
+  return store.state.likedSongs.some(s => s.youtubeId === song.youtubeId)
+}
+
 function href(path) {
   window.location.href = path
 }
@@ -631,5 +629,10 @@ onMounted(() => {
   }
 })
 </script>
+
 <style scoped>
+.scale-115 {
+  transform: scale(1.15);
+  transition: transform 0.2s ease;
+}
 </style>

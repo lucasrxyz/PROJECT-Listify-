@@ -43,6 +43,7 @@ export default createStore({
   state: {
     playlists: loadPlaylists(), // array { id, name, songs: [{ id, title, artist, youtubeId, url }] }
     recentlyPlayed: loadHistory(),
+    likedSongs: JSON.parse(localStorage.getItem('likedSongs') || '[]'),
     player: {
       playlistId: null,    // id of playlist being played
       songIndex: 0,        // index inside playlist.songs
@@ -79,6 +80,16 @@ export default createStore({
       state.playlists = playlists
       savePlaylists(state.playlists)
     },
+    ADD_LIKED_SONG(state, song) {
+    if (!state.likedSongs.find(s => s.youtubeId === song.youtubeId)) {
+      state.likedSongs.unshift(song)
+      localStorage.setItem('likedSongs', JSON.stringify(state.likedSongs))
+    }
+  },
+  REMOVE_LIKED_SONG(state, song) {
+    state.likedSongs = state.likedSongs.filter(s => s.youtubeId !== song.youtubeId)
+    localStorage.setItem('likedSongs', JSON.stringify(state.likedSongs))
+  },
     ADD_PLAYLIST(state, playlist) {
       state.playlists.push(playlist)
       savePlaylists(state.playlists)
@@ -167,6 +178,11 @@ export default createStore({
       commit('ADD_TO_RECENTLY_PLAYED', song)
       commit('PLAYER_SET_PLAYING', true)
     },
+    toggleLike({ commit, state }, song) {
+    const isLiked = state.likedSongs.some(s => s.youtubeId === song.youtubeId)
+    if (isLiked) commit('REMOVE_LIKED_SONG', song)
+    else commit('ADD_LIKED_SONG', song)
+  },
     playSong({ state, commit }, { playlistId, index = 0 }) {
       // 1️⃣ On cherche la playlist correspondante
       const playlist = state.playlists.find(p => p.id === playlistId)
