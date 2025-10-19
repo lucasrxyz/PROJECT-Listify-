@@ -151,6 +151,9 @@ export default createStore({
     deletePlaylist({ commit }, playlistId) {
       commit('REMOVE_PLAYLIST', playlistId)
     },
+    addSong({ commit }, { playlistId, song }) {
+      commit('ADD_SONG_TO_PLAYLIST', { playlistId, song })
+    },
     playSongDirectly({ commit, state }, song) {
       // Crée playlist "recent" si nécessaire
       let recentPlaylist = state.playlists.find(p => p.id === 'recent')

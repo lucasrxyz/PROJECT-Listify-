@@ -1,3 +1,31 @@
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+const store = useStore()
+const router = useRouter()
+
+const playlists = computed(() => store.state.playlists)
+
+// Exclure certaines playlists
+const filteredPlaylists = computed(() =>
+  playlists.value.filter(
+    (p) => !['recent', 'liked', 'all', 'shuffled','allShuffled'].includes(p.id)
+  )
+)
+
+function createPlaylist() {
+  const name = prompt('Nom de la nouvelle playlist :')
+  if (!name) return
+  store.dispatch('createPlaylist', name)
+}
+
+function openPlaylist(id) {
+  router.push({ path: '/playlists', query: { pid: id } })
+}
+</script>
+
 <template>
   <v-navigation-drawer
     class="mr-2"
@@ -71,9 +99,9 @@
         @click="createPlaylist"
       />
 
-      <!-- 🔽 Playlists dynamiques -->
+      <!-- 🔽 Playlists dynamiques filtrées -->
       <v-list-item
-        v-for="playlist in playlists"
+        v-for="playlist in filteredPlaylists"
         :key="playlist.id"
         :title="playlist.name.name"
         :to="`/playlists`"
@@ -85,25 +113,3 @@
     </v-list>
   </v-navigation-drawer>
 </template>
-
-<script setup>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-
-const store = useStore()
-const router = useRouter()
-
-const playlists = computed(() => store.state.playlists)
-
-function createPlaylist() {
-  const name = prompt('Nom de la nouvelle playlist :')
-  if (!name) return
-  store.dispatch('createPlaylist', name)
-}
-
-function openPlaylist(id) {
-  // go to playlists page and maybe set selected id via query
-  router.push({ path: '/playlists', query: { pid: id } })
-}
-</script>

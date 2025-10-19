@@ -21,17 +21,14 @@
     <!-- 🔘 Boutons d’action -->
     <v-row class="px-5 mb-8">
       <v-col cols="12" class="d-flex flex-wrap align-center gap-3">
-        <v-btn color="niceColor" variant="outlined" prepend-icon="mdi-play" class="text-none mr-2">
-          Play All
+        <v-btn color="niceColor" variant="outlined" class="text-none mr-3 scale-105-rotate-btn" @click="playAllCombined">
+          <v-icon class="mr-2" style="margin-bottom:2px;">mdi-play</v-icon>Play All
         </v-btn>
-        <v-btn color="secondary" variant="text" prepend-icon="mdi-shuffle" class="text-none mr-2">
-          Shuffle
+        <v-btn color="secondary" variant="outlined" class="text-none mr-3 scale-105-rotate-btn" @click="shuffleAll">
+          <v-icon class="mr-2" style="margin-bottom:2px;">mdi-shuffle</v-icon>Shuffle all
         </v-btn>
-        <v-btn color="secondary" variant="text" prepend-icon="mdi-heart-multiple-outline" class="text-none mr-2">
-          Liked
-        </v-btn>
-        <v-btn color="grey" variant="plain" prepend-icon="mdi-folder-plus" class="text-none mr-2">
-          Import Local Files
+        <v-btn color="grey" variant="text" class="text-none mr-3 scale-105-rotate-btn">
+          <v-icon class="mr-2" style="margin-bottom:2px;">mdi-folder-plus</v-icon>Import Local Files
         </v-btn>
       </v-col>
     </v-row>
@@ -137,14 +134,14 @@
         >
           <h2 class="text-h5 mb-0">
             Recently Liked
-            <v-btn class="ml-3 mb-1" variant="outlined">
+            <v-btn class="ml-3 mb-1" variant="outlined" @click="playAllLiked">
               <b><v-icon class="mr-3" style="margin-bottom:2px;">mdi-play</v-icon>Play all</b>
             </v-btn>
           </h2>
           
           <v-btn variant="text" 
           class="opacity-50 text-white cursor-pointer text-subtitle-2 float-right" 
-          @click="$router.push('/recently-played')">Show all</v-btn>
+          @click="$router.push('/liked-songs')">Show all</v-btn>
         </div>
       </v-col>
 
@@ -332,6 +329,71 @@ function playAll() {
   // On lance la lecture de la première chanson
   store.dispatch('playSong', { playlistId: 'recent', index: 0 })
 }
+function playAllLiked() {
+  const liked = store.state.likedSongs
+  if (!liked.length) return
+
+  // On crée une playlist temporaire "liked" si besoin
+  let likedPlaylist = store.state.playlists.find(p => p.id === 'liked')
+  if (!likedPlaylist) {
+    store.commit('ADD_PLAYLIST', { id: 'liked', name: 'Liked Songs', songs: [] })
+    likedPlaylist = store.state.playlists.find(p => p.id === 'liked')
+  }
+
+  // On synchronise les chansons likées dans cette playlist
+  likedPlaylist.songs = liked
+
+  // On lance la lecture de la première chanson
+  store.dispatch('playSong', { playlistId: 'liked', index: 0 })
+}
+function playAllCombined() {
+  // Récupère toutes les chansons récentes + likées
+  const allSongs = [...store.state.recentlyPlayed, ...store.state.likedSongs]
+  if (!allSongs.length) return
+
+  // Crée ou récupère une playlist temporaire "all"
+  let allPlaylist = store.state.playlists.find(p => p.id === 'all')
+  if (!allPlaylist) {
+    store.commit('ADD_PLAYLIST', { id: 'all', name: 'All Recent & Liked', songs: [] })
+    allPlaylist = store.state.playlists.find(p => p.id === 'all')
+  }
+
+  // On synchronise toutes les chansons dans cette playlist
+  allPlaylist.songs = allSongs
+
+  // On lance la lecture de la première chanson
+  store.dispatch('playSong', { playlistId: 'all', index: 0 })
+}
+function shuffleAll() {
+  // Combine les chansons récentes et likées
+  const allSongs = [...store.state.recentlyPlayed, ...store.state.likedSongs]
+  if (!allSongs.length) return
+
+  // Fonction pour mélanger un tableau (Fisher-Yates)
+  function shuffleArray(array) {
+    const arr = [...array]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  }
+
+  const shuffledSongs = shuffleArray(allSongs)
+
+  // Crée ou récupère la playlist temporaire "allShuffled"
+  let shuffledPlaylist = store.state.playlists.find(p => p.id === 'allShuffled')
+  if (!shuffledPlaylist) {
+    store.commit('ADD_PLAYLIST', { id: 'allShuffled', name: 'Shuffled Recent & Liked', songs: [] })
+    shuffledPlaylist = store.state.playlists.find(p => p.id === 'allShuffled')
+  }
+
+  // On synchronise les chansons mélangées dans cette playlist
+  shuffledPlaylist.songs = shuffledSongs
+
+  // On lance la lecture de la première chanson
+  store.dispatch('playSong', { playlistId: 'allShuffled', index: 0 })
+}
 
 
 function playSong(idx) {
@@ -389,6 +451,10 @@ body {
 }
 .scale-115 {
   transform: scale(1.15);
+  transition: transform 0.2s ease;
+}
+.scale-105-rotate-btn:hover {
+  transform: scale(1.05) rotate(-0.6deg);
   transition: transform 0.2s ease;
 }
 
