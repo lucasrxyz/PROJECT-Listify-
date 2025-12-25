@@ -17,12 +17,12 @@ export default createVuetify({
     themes: {
       dark: {
         colors: {
-          background: '#121212',
-          surface: '#1E1E1E',
-          primary: '#8E24AA',
-          secondary: '#d998ffff',
-          error: '#CF6679',
-          niceColor: '#ff79ffff',
+          background: '#010300ff',
+          surface: '#010200ff',
+          primary: '#61f73cff',
+          secondary: '#47d423ff',
+          error: '#b81818ff',
+          niceColor: '#7fe466ff',
         },
       },
     },
@@ -30,7 +30,7 @@ export default createVuetify({
   defaults: {
     global: {
       style: {
-        fontFamily: 'Arial, sans-serif', // Police globale
+        fontFamily: 'Calibri, sans-serif', // Police globale
       },
     },
     VBtn: {

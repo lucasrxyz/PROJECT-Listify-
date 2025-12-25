@@ -423,9 +423,6 @@ function selectSong(idx) {
   overflow-y: auto;
   max-height: calc(100vh - 80px);
 }
-.text-decoration-underline {
-  text-decoration: underline;
-}
 .opacity-60 {
   opacity: 0.6;
 }
@@ -448,14 +445,6 @@ body {
 }
 .scroll-hidden {
   scrollbar-width: none; /* Firefox */
-}
-.scale-115 {
-  transform: scale(1.15);
-  transition: transform 0.2s ease;
-}
-.scale-105-rotate-btn:hover {
-  transform: scale(1.05) rotate(-0.6deg);
-  transition: transform 0.2s ease;
 }
 
 </style>

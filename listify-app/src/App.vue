@@ -160,54 +160,7 @@ html, body, #app {
   display: none;
 }
 
-.router-wrapper {
-  padding: 0px;
-  margin: 20px;
-  border-radius: 24px;
-  overflow: hidden;
-  background: rgba(24, 24, 24, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-/* 🌫️ --- FOND ANIMÉ --- */
-.animated-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 0;
-
-  background: radial-gradient(circle at 20% 30%, #ffffff 0%, transparent 40%),
-              radial-gradient(circle at 70% 70%, #9e84dd 0%, transparent 40%),
-              radial-gradient(circle at 40% 80%, #64647e 0%, transparent 45%);
-  background-size: 200% 200%;
-  filter: blur(60px);
-  animation: moveBg 20s infinite alternate ease-in-out;
-}
-
-@keyframes moveBg {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 50% 100%; }
-}
-
-.transparent-layout {
-  backdrop-filter: blur(15px);
-  background: rgba(18, 18, 18, 0.3);
-  position: relative;
-  z-index: 0;
-}
-
-.transparent-main {
-  background: rgba(18, 18, 18, 0.2) !important;
-  backdrop-filter: blur(10px);
-}
-
 .transparent-bar {
-  background: rgba(24, 24, 24, 0.4) !important;
-  backdrop-filter: blur(12px);
   -webkit-app-region: drag;
 }
 .transparent-bar button,
@@ -215,22 +168,7 @@ html, body, #app {
   -webkit-app-region: no-drag;
 }
 
-.v-container,
-.v-list,
-.v-navigation-drawer {
-  background-color: rgba(24, 24, 24, 0.1) !important;
-  backdrop-filter: blur(10px);
-}
-
 .v-footer {
-  background: rgba(18, 18, 18, 0.3) !important;
-  backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* 🌙 --- STYLE DARK --- */
-.bg-darken {
-  background: rgba(24, 24, 24, 0.9) !important;
-  color: white;
 }
 </style>

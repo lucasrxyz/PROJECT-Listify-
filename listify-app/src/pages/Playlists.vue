@@ -23,7 +23,12 @@
         </p>
       </v-col>
       <v-col class="d-flex justify-end mr-10">
-        <v-btn color="niceColor" :ripple="false" @click="promptNewPlaylist" variant="text">
+        <v-btn 
+          color="niceColor" 
+          :ripple="false"
+          @click="promptNewPlaylist" 
+          variant="text"
+          class="rounded-0">
           <v-icon class="mb-1 mr-2">mdi-plus</v-icon>New playlist
         </v-btn>
       </v-col>
@@ -34,14 +39,14 @@
       <v-col cols="3">
         <v-list
           two-line
-          class="rounded-lg"
+          class="rounded-0"
           style="max-height: 588px; overflow-y: auto;">
           <v-list-item
             v-for="pl in playlists.filter(p => p.name.name && p.name.name.trim() !== '')"
             :key="pl.id"
             :class="{ 'primary--text': selectedPlaylist && selectedPlaylist.id === pl.id }"
             @click="selectPlaylist(pl)"
-            class="rounded-lg mb-2 mr-2 ml-2"
+            class="rounded-0 mb-2 mr-2 ml-2"
           >
             <template #prepend>
               <v-avatar size="56" rounded="lg" class="mr-3">
@@ -631,8 +636,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.scale-115 {
-  transform: scale(1.15);
-  transition: transform 0.2s ease;
-}
 </style>
