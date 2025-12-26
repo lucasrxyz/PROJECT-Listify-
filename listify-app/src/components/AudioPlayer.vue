@@ -1,5 +1,5 @@
 <template>
-  <v-footer app padless height="100" color="#121212">
+  <v-footer app padless height="90" color="background" class="pb-3">
     <v-container fluid class="pa-0 d-flex flex-column align-center justify-center">
 
       <!-- Zone boutons + titre -->
@@ -7,10 +7,10 @@
         <!-- Zone gauche : titre + artiste -->
         <v-card
           variant="text"
-          class="d-flex align-center rounded-lg pa-1 transition-all"
+          class="d-flex align-center rounded-0 pa-2 transition-all box-shadow"
           :style="{
-            width: '320px',
-            backgroundColor: 'rgba(255,255,255,0.035)',
+            width: '400px',
+            backgroundColor: '#010200ff',
             opacity: currentSong ? 1 : 0,
             transition: 'opacity 0.4s ease'
           }"
@@ -24,7 +24,7 @@
               :src="currentThumbnail"
               width="48"
               height="48"
-              class="rounded-lg"
+              class="rounded-0"
               cover
             ></v-img>
           </div>
@@ -53,17 +53,17 @@
 
         <!-- Zone centrale : boutons -->
         <div class="d-flex align-center justify-center">
-          <v-btn size="large" class="rounded-lg ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-shuffle"></v-btn>
+          <v-btn size="large" class="rounded-0 ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-shuffle"></v-btn>
 
-          <v-btn size="large" class="rounded-lg ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-skip-previous"></v-btn>
-          <v-btn size="large" class="rounded-lg ma-1" @click="rewindSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn>
-          <v-btn size="large" class="rounded-lg ma-1" @click="togglePlay" variant="tonal" density="compact" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'"></v-btn>
-          <v-btn size="large" class="rounded-lg ma-1 rotate-180 test" @click="addSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn>
-          <v-btn size="large" class="rounded-lg ma-1 mr-6" @click="nextSong" variant="text" density="compact" icon="mdi-skip-next"></v-btn>
+          <v-btn size="large" class="rounded-0 ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-skip-previous"></v-btn>
+          <!-- <v-btn size="large" class="rounded-0 ma-1" @click="rewindSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn> -->
+          <v-btn size="large" class="rounded-0 ma-1" @click="togglePlay" variant="tonal" density="compact" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'" color="accentLight"></v-btn>
+          <!-- <v-btn size="large" class="rounded-0 ma-1 rotate-180 test" @click="addSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn> -->
+          <v-btn size="large" class="rounded-0 ma-1 mr-6" @click="nextSong" variant="text" density="compact" icon="mdi-skip-next"></v-btn>
 
           <v-btn
             size="large"
-            class="rounded-lg ma-1 mr-6"
+            class="rounded-0 ma-1 mr-6"
             @click="toggleRepeat"
             variant="plain"
             density="compact"
@@ -72,12 +72,14 @@
           ></v-btn>
 
           <v-card
-            variant="tonal"
+            variant="text"
             width="190"
             height="45"
-            class="d-flex flex-column rounded-lg transition-all position-relative"
+            class="d-flex flex-column rounded-0 transition-all position-relative"
             :style="{
               paddingTop: '2px',
+              backgroundColor: '#070807ff',
+              border: '1px solid rgba(71, 212, 35, 0.1)',
               opacity: showNextCard ? 1 : 0,
               transition: 'opacity 0.6s ease'
             }"
@@ -96,15 +98,14 @@
               :model-value="nextCardProgress"
               height="3"
               color="niceColor"
-              rounded
               class="position-absolute bottom-0 left-0 w-100"
             ></v-progress-linear>
           </v-card>
         </div>
 
         <!-- Zone droite : contrôle du volume -->
-        <div class="d-flex align-center ml-10" style="width: 200px;">
-          <v-icon size="24" class="mr-2">
+        <div class="d-flex align-center ml-10 rounded-0" style="width: 200px;">
+          <v-icon size="18" class="mr-2 rounded-0">
             {{ volumeIcon }}
           </v-icon>
           <v-slider
@@ -112,11 +113,12 @@
             min="0"
             max="100"
             step="1"
-            class="volume-slider"
             color="niceColor"
+            rounded-0
+            class="rounded-0"
             hide-details
             thumb-size="0"
-            track-size="3"
+            track-size="1"
             style="width: 150px;"
           ></v-slider>
         </div>
@@ -125,9 +127,8 @@
       <!-- Barre de progression -->
       <v-progress-linear
         :model-value="progressPercent"
-        height="4"
+        height="2"
         color="niceColor"
-        rounded
         class="w-100"
       ></v-progress-linear>
 
@@ -371,5 +372,9 @@ function prevSong() {
 }
 .couleur {
   background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.box-shadow {
+  box-shadow: inset 0 0px 0px 1px #61f73c40;
 }
 </style>

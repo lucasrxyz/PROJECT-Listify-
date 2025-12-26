@@ -663,6 +663,7 @@ onMounted(() => {
     inset: 0;
     background-image: url("../assets/frutigerMetro.png");
     background-size: 150%;
+    
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0;
@@ -676,6 +677,7 @@ onMounted(() => {
     .hover-border:hover {
       transition: opacity 0.15s ease-in-out;
       border-left: 3px solid #61f73c;
+      box-shadow: inset 0 0 0 1px #61f73c40;
     }
 
 

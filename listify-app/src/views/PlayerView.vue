@@ -27,7 +27,7 @@
     </div>
 
     <div v-else>
-      <p>Chargement de la playlist...</p>
+      <p>Loading playlist...</p>
     </div>
   </div>
 </template>
