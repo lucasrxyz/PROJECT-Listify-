@@ -7,7 +7,7 @@
           <span
             style="color:#61f73cff;"
             class="opacity-50 cursor-pointer ml-5"
-            @click="href('/')"
+            to="/"
             @mouseover="hoverHome = true" 
             @mouseleave="hoverHome = false"
             :class="hoverHome ? 'text-decoration-underline' : ''"
@@ -16,7 +16,7 @@
           <span 
             class="opacity-70 cursor-pointer"
             style="color:#61f73cff;"
-            @click="href('/playlists')"
+            to="/playlists"
             @mouseover="hoverPlaylists = true" 
             @mouseleave="hoverPlaylists = false"
             :class="hoverPlaylists ? 'text-decoration-underline' : ''"
@@ -25,30 +25,24 @@
         </p>
       </v-col>
       <v-col class="d-flex justify-end mr-10">
-        <v-btn 
-          color="niceColor" 
-          :ripple="false"
-          @click="promptNewPlaylist" 
-          variant="text"
-          class="rounded-0">
-          <v-icon class="mb-1 mr-2">mdi-plus</v-icon>New playlist
-        </v-btn>
+        
       </v-col>
     </v-row>
-
+    
     <v-row>
       <!-- Liste des playlists -->
       <v-col cols="3">
         <v-list
           two-line
           class="rounded-0"
-          style="max-height: 588px; overflow-y: auto;">
+          style="max-height: 588px; overflow-y: auto; padding: 4px;border: 1px solid #61f73cff;">
           <v-list-item
+            
             v-for="pl in playlists.filter(p => p.name.name && p.name.name.trim() !== '')"
             :key="pl.id"
+            class="rounded-0"
             :class="{ 'primary--text': selectedPlaylist && selectedPlaylist.id === pl.id }"
             @click="selectPlaylist(pl)"
-            class="rounded-0"
           >
             <template #prepend>
               <v-avatar size="56" rounded="0" class="mr-1">
@@ -64,15 +58,25 @@
             <v-list-item-content>
               <v-list-item-title>
                 {{ pl.name.name }}&nbsp;
-                <v-icon size="16" class="float-right hover-scale" color="niceColor" @click.stop="deletePlaylist(pl.id)">mdi-delete</v-icon>
-                <v-icon size="16" class="float-right hover-scale" color="primary">mdi-image-edit</v-icon>
+                <v-icon size="16" class="float-right hover-scale playlist-action" color="niceColor" @click.stop="deletePlaylist(pl.id)">mdi-delete</v-icon>
+                <v-icon size="16" class="float-right hover-scale playlist-action" color="primary">mdi-image-edit</v-icon>
               </v-list-item-title>
               <v-list-item-subtitle>{{ pl.songs.length }} songs</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
+          <v-btn 
+            block
+            color="niceColor" 
+            :ripple="false"
+            :loading="isLoading"
+            @click="promptNewPlaylist" 
+            variant="tonal"
+            class="rounded-0">
+            <v-icon class="mb-1 mr-2">mdi-plus</v-icon>
+            New playlist
+          </v-btn>
         </v-list>
       </v-col>
-
 
       <!-- Contenu de la playlist sélectionnée -->
       <v-col cols="8">
@@ -641,12 +645,12 @@ onMounted(() => {
 
 <style scoped>
   .hover-scale {
-    transform: scale(1);
+    transform: scale(1) !important;
     transition: 0.15s ease-in-out;
     opacity:70%;
   }
     .hover-scale:hover {
-      transform: scale(1.2);
+      transform: scale(1.2) !important;
       transition: 0.15s ease-in-out;
       opacity:100%;
     }
@@ -680,5 +684,14 @@ onMounted(() => {
       box-shadow: inset 0 0 0 1px #61f73c40;
     }
 
+  .playlist-action {
+    opacity: 0;
+    transform: translateX(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
 
+  .v-list-item:hover .playlist-action {
+    opacity: 1;
+    transform: translateX(0);
+  }
 </style>

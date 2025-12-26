@@ -53,17 +53,21 @@
 
         <!-- Zone centrale : boutons -->
         <div class="d-flex align-center justify-center">
-          <v-btn size="large" class="rounded-0 ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-shuffle"></v-btn>
+          <v-btn size="large" class="rounded-0 ma-1 ml-6" @click="prevSong" variant="plain" density="compact" icon="mdi-shuffle"></v-btn>
 
-          <v-btn size="large" class="rounded-0 ma-1 ml-6" @click="prevSong" variant="text" density="compact" icon="mdi-skip-previous"></v-btn>
+          <v-btn size="large" class="rounded-0 ma-1 ml-6 " @click="prevSong" variant="plain" density="compact" icon="mdi-skip-previous"></v-btn>
           <!-- <v-btn size="large" class="rounded-0 ma-1" @click="rewindSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn> -->
-          <v-btn size="large" class="rounded-0 ma-1" @click="togglePlay" variant="tonal" density="compact" :icon="isPlaying ? 'mdi-pause' : 'mdi-play'" color="accentLight"></v-btn>
+
+          <button class="frutiger-aero-button small mr-2 ml-2" @click="togglePlay">
+            <v-icon color="surface" class="ma-0 pa-0">{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</v-icon>
+          </button>
           <!-- <v-btn size="large" class="rounded-0 ma-1 rotate-180 test" @click="addSeconds(15)" variant="text" density="compact" icon="mdi-rewind"></v-btn> -->
-          <v-btn size="large" class="rounded-0 ma-1 mr-6" @click="nextSong" variant="text" density="compact" icon="mdi-skip-next"></v-btn>
+           
+          <v-btn size="large" class="rounded-0 ma-1 mr-6" @click="nextSong" variant="plain" density="compact" icon="mdi-skip-next"></v-btn>
 
           <v-btn
             size="large"
-            class="rounded-0 ma-1 mr-6"
+            class="rounded-0 ma-1 mr-6 hover-primary"
             @click="toggleRepeat"
             variant="plain"
             density="compact"
@@ -375,6 +379,110 @@ function prevSong() {
 }
 
 .box-shadow {
-  box-shadow: inset 0 0px 0px 1px #61f73c40;
+  margin-left: -30px !important;
 }
+
+
+
+
+
+
+/* Authentic Frutiger Aero Button CSS */
+.frutiger-aero-button {
+  /* OKLCH Color System for accurate colors */
+  --hue: 140;
+  --sat: 0.28;
+  --glow-intensity: 0.85;
+  
+  /* Color Variables */
+  --fg: oklch(15% calc(var(--sat) * 0.5) var(--hue));
+  --bg: oklch(75% var(--sat) var(--hue) / 0.8);
+  --bg-dark: oklch(45% var(--sat) var(--hue) / 0.75);
+  --bottom-glow: radial-gradient(
+    farthest-corner at bottom center,
+    rgba(255, 255, 255, var(--glow-intensity)),
+    transparent
+  );
+  
+  /* Base Styling */
+  background-color: var(--bg);
+  background: 
+    var(--bottom-glow),
+    linear-gradient(to bottom, var(--bg-dark), var(--bg));
+  
+  border: 1px solid var(--bg);
+  border-radius: 9999px;
+  
+  /* Shadows and Effects */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+  
+  /* Typography */
+  color: var(--fg);
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif;
+  font-weight: 700;
+  text-shadow: 0 2px 0.5em rgba(0, 0, 0, 0.2);
+  
+  /* Layout */
+  cursor: pointer;
+  position: relative;
+  transition: all 300ms ease;
+  
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Top Highlight Effect */
+.frutiger-aero-button::after {
+  content: "";
+  position: absolute;
+  top: 4%;
+  left: 0.75em;
+  width: calc(100% - 1.5em);
+  height: 40%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.1)
+  );
+  border-radius: inherit;
+  transition: background 400ms ease;
+  pointer-events: none;
+}
+
+/* Hover State */
+.frutiger-aero-button:hover,
+.frutiger-aero-button:focus {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Active State */
+.frutiger-aero-button:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+/* Size Variations */
+.frutiger-aero-button.small {
+  padding: 0.5em 0.7em;
+  font-size: 0.875rem;
+}
+
+.frutiger-aero-button.medium {
+  padding: 0.75em 2em;
+  font-size: 1rem;
+}
+
+.frutiger-aero-button.large {
+  padding: 1em 3em;
+  font-size: 1.125rem;
+}
+
+.hover-primary {
+  transition: 0.2s ease-in-out;
+}
+  .hover-primary:hover {
+    color: #61f73cff;
+  }
 </style>
