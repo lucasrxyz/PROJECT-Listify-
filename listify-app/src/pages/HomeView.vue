@@ -6,6 +6,7 @@
         <h1 class="text-h4 ml-5 mb-2">{{ greeting }}</h1>
         <p>
           <span
+            style="color:#61f73cff;"
             class="opacity-50 cursor-pointer ml-5"
             @click="href('/')"
             @mouseover="hoverHome = true"
@@ -62,7 +63,7 @@
           <v-list-item
             v-for="(song, idx) in recentSongs"
             :key="song.id || idx"
-            class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
+            class="rounded-0 hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
             @click="selectSong(idx)"
           >
             <template #prepend>
@@ -71,7 +72,7 @@
                   icon
                   @click.stop="playSong(idx)"
                   variant="plain"
-                  class="elevation-0 rounded-lg mr-5"
+                  class="elevation-0 rounded-0 mr-5"
                   density="comfortable"
                 >
                   <v-icon>mdi-play</v-icon>

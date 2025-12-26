@@ -5,16 +5,18 @@
         <h1 class="text-h4 ml-5 mb-2">Liked songs</h1>
         <p>
           <span 
-            class="opacity-50 cursor-pointer ml-5" 
+            class="opacity-50 cursor-pointer ml-5"
+            style="color:#61f73cff;"
             @click="href('/')"
             @mouseover="hoverHome = true" 
             @mouseleave="hoverHome = false"
             :class="hoverHome ? 'text-decoration-underline' : ''"
           >Home</span>
-          <span class="opacity-50">&nbsp;>&nbsp;</span>
+          <span class="opacity-50" style="color:#61f73cff;">&nbsp;>&nbsp;</span>
           <span 
             class="opacity-70 cursor-pointer" 
             @click="href('/liked-songs')"
+            style="color:#61f73cff;"
             @mouseover="hoverLikedSongs = true" 
             @mouseleave="hoverLikedSongs = false"
             :class="hoverLikedSongs ? 'text-decoration-underline' : ''"

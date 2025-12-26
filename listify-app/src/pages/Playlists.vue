@@ -4,16 +4,18 @@
       <v-col>
         <h1 class="text-h4 ml-5 mb-2">Current playlists</h1>
         <p>
-          <span 
-            class="opacity-50 cursor-pointer ml-5" 
+          <span
+            style="color:#61f73cff;"
+            class="opacity-50 cursor-pointer ml-5"
             @click="href('/')"
             @mouseover="hoverHome = true" 
             @mouseleave="hoverHome = false"
             :class="hoverHome ? 'text-decoration-underline' : ''"
           >Home</span>
-          <span class="opacity-50">&nbsp;>&nbsp;</span>
+          <span class="opacity-50" style="color:#61f73cff;">&nbsp;>&nbsp;</span>
           <span 
-            class="opacity-70 cursor-pointer" 
+            class="opacity-70 cursor-pointer"
+            style="color:#61f73cff;"
             @click="href('/playlists')"
             @mouseover="hoverPlaylists = true" 
             @mouseleave="hoverPlaylists = false"
@@ -46,25 +48,24 @@
             :key="pl.id"
             :class="{ 'primary--text': selectedPlaylist && selectedPlaylist.id === pl.id }"
             @click="selectPlaylist(pl)"
-            class="rounded-0 mb-2 mr-2 ml-2"
+            class="rounded-0"
           >
             <template #prepend>
-              <v-avatar size="56" rounded="lg" class="mr-3">
+              <v-avatar size="56" rounded="0" class="mr-1">
                 <v-img
                   v-if="pl.songs.length > 0"
                   :src="`https://img.youtube.com/vi/${pl.songs[0].youtubeId}/mqdefault.jpg`"
                   alt="Playlist thumbnail"
                 />
-                <v-icon v-else icon="mdi-music" size="32" color="grey"/>
+                <v-icon v-else icon="mdi-music" size="25" color="grey"/>
               </v-avatar>
             </template>
           
             <v-list-item-content>
               <v-list-item-title>
-                {{ pl.name.name }}&nbsp;&nbsp;&nbsp;
-                <v-btn icon @click.stop="deletePlaylist(pl.id)" rounded-0 elevation="0" variant="text" class="rounded-lg" density="comfortable">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                {{ pl.name.name }}&nbsp;
+                <v-icon size="16" class="float-right hover-scale" color="niceColor" @click.stop="deletePlaylist(pl.id)">mdi-delete</v-icon>
+                <v-icon size="16" class="float-right hover-scale" color="primary">mdi-image-edit</v-icon>
               </v-list-item-title>
               <v-list-item-subtitle>{{ pl.songs.length }} songs</v-list-item-subtitle>
             </v-list-item-content>
@@ -80,20 +81,23 @@
         </div>
 
         <div v-else>
-          <div class="d-flex align-center mb-4">
-            <v-btn small class="mr-3 rounded-lg elevation-0">
-              <v-icon>mdi-shuffle</v-icon>
-            </v-btn>
-            <v-btn class="ml-2 mr-3 rounded-lg elevation-0" color="niceColor" variant="tonal" @click="playAll">
-              <v-icon class="mr-3" style="margin-bottom:2px;">mdi-play</v-icon>Play
-            </v-btn>
-            <v-divider vertical class="flex-grow-1 mr-4"></v-divider>
+          <div class="d-flex align-center mb-2" style="border-bottom:1px solid rgba(255,255,255,0.2);">
 
-            <h1 class="text-h5 mr-4">{{ selectedPlaylist.name.name }}</h1>
-
-            <v-btn class="elevation-0 rounded-lg" small variant="text" @click="openAddSongDialog">
-              <v-icon class="mb-1 mr-2">mdi-plus</v-icon>Add
+            <h1 class="text-h5 mr-2">{{ selectedPlaylist.name.name }}</h1>
+            <v-btn small density="compact" class="mr-4 rounded-0 elevation-0 text-none" color="niceColor" variant="text" @click="openAddSongDialog">
+              <v-icon class="mr-1" size="15">mdi-plus</v-icon>&nbsp;<i>Add a new song</i>
             </v-btn>
+            <span class="mr-4">////////////</span>
+            <v-btn small density="compact" class="mr-1 rounded-0 elevation-0 text-none">
+              <v-icon class="mr-1" size="15">mdi-shuffle</v-icon>&nbsp;<i>Shuffle</i>
+            </v-btn>
+
+            <v-btn small density="compact" class="mr-1 rounded-0 elevation-0 text-none" color="primary" variant="text" @click="playAll">
+              <v-icon class="mr-1" size="15">mdi-play</v-icon>&nbsp;<i>Play</i>
+            </v-btn>
+
+            
+
           </div>
 
           <v-chip density="compact" class="mb-3 mr-2" label>{{ selectedPlaylist.songs.length }} songs</v-chip>
@@ -113,18 +117,18 @@
               v-for="(song, idx) in selectedPlaylist.songs"
               :key="song.id"
               :ripple="false"
-              @click="dsds(idx)"
-              class="rounded-lg hover:bg-grey-darken-3 transition-all mb-2 mr-2 ml-2"
+              @click="playSong(idx)"
+              class="rounded-0 hover:bg-grey-darken-3 transition-all hover-border"
             >
-              <template #prepend>
-                <v-btn icon @click.stop="playSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-3" density="comfortable">
+              <template #prepend @click.stop="playSong(idx)">
+                <!-- <v-btn icon variant="plain" :ripple="false" class="elevation-0 rounded-0 mr-3" density="comfortable">
                   <v-icon>mdi-play</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="removeSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-lg mr-5" density="comfortable">
+                <v-btn icon @click.stop="removeSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-0 mr-5" density="comfortable">
                   <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                </v-btn> -->
               
-                <v-avatar size="56" rounded="lg" class="mr-3">
+                <v-avatar size="56" rounded="0" class="mr-1">
                   <v-img :src="`https://img.youtube.com/vi/${song.youtubeId}/mqdefault.jpg`" alt="Song thumbnail" />
                 </v-avatar>
               </template>
@@ -636,4 +640,43 @@ onMounted(() => {
 </script>
 
 <style scoped>
+  .hover-scale {
+    transform: scale(1);
+    transition: 0.15s ease-in-out;
+    opacity:70%;
+  }
+    .hover-scale:hover {
+      transform: scale(1.2);
+      transition: 0.15s ease-in-out;
+      opacity:100%;
+    }
+
+
+  .hover-border {
+    position: relative;
+    border-left: 1px solid #61f73c;
+  }
+
+  .hover-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("../assets/frutigerMetro.png");
+    background-size: 150%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+    pointer-events: none;
+  }
+
+    .hover-border:hover::before {
+      opacity: 0.50;
+    }
+    .hover-border:hover {
+      transition: opacity 0.15s ease-in-out;
+      border-left: 3px solid #61f73c;
+    }
+
+
 </style>
