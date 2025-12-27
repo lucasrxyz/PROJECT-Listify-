@@ -13,8 +13,7 @@
             backgroundColor: '#010200ff',
             opacity: currentSong ? 1 : 0,
             transition: 'opacity 0.4s ease'
-          }"
-        >
+          }">
           <div
             class="d-flex align-center"
             style="width: 48px; height: 48px; flex-shrink: 0; margin-right: 12px;"
@@ -381,9 +380,6 @@ function prevSong() {
 .box-shadow {
   margin-left: -30px !important;
 }
-
-
-
 
 
 

@@ -3,7 +3,7 @@
     <!-- 🔹 En-tête -->
     <v-row class="mb-4">
       <v-col>
-        <h1 class="text-h4 ml-5 mb-2">{{ greeting }}</h1>
+        <h1 class="text-h4 ml-5 mb-2">{{ greeting }}</h1><v-btn to="/playlists">Go to playlists</v-btn>
         <p>
           <span
             style="color:#61f73cff;"

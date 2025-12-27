@@ -4,35 +4,21 @@
 
     <v-layout class="h-screen transparent-layout">
       <!-- 🧭 Menu latéral -->
-      <NavDrawer />
+      <!-- <NavDrawer /> -->
 
       <!-- 🎵 Contenu principal -->
       <v-main class="transparent-main">
-        <v-app-bar :elevation="0" height="65" app density="compact" class="transparent-bar">
+        <v-app-bar :elevation="0" height="55" app density="compact" class="transparent-bar">
           <v-spacer></v-spacer>
-
-          <!-- 🔍 Barre de recherche -->
-          <v-text-field
-            placeholder="Search"
-            variant="outlined"
-            density="compact"
-            size="x-small"
-            rounded="lg"
-            hide-details
-            prepend-inner-icon="mdi-magnify"
-            class="mx-auto ml-2"
-            style="max-width: 400px; width: 50%;margin-bottom:1px;"
-          />
 
           <v-spacer></v-spacer>
 
           <!-- 👤 Profil / Connexion -->
           <div class="mr-3">
-            <v-menu v-if="user" location="bottom end">
-              <template #activator="{ props }">
-                <v-btn v-bind="props" rounded="xl" variant="text" class="text-white" density="compact" size="large">
-                  <v-icon left class="mr-3" style="margin-top:2px;">mdi-account-circle</v-icon>
-                  <span style="font-size:16px !important;">{{ user.name }}</span>
+            <v-menu v-if="user" location="bottom end" class="text-none">
+              <template #activator="{ props }" class="text-none">
+                <v-btn v-bind="props" rounded="0" variant="text" class="text-white text-none" density="compact" size="large">
+                  <span style="font-size:14px !important;" class="text-none">{{ user.name }}</span>
                   <v-icon size="18" class="ml-1 opacity-70">mdi-chevron-down</v-icon>
                 </v-btn>
               </template>

@@ -28,22 +28,20 @@
         
       </v-col>
     </v-row>
-    
+
     <v-row>
       <!-- Liste des playlists -->
-      <v-col cols="3">
+      <!-- <v-col cols="3">
         <v-list
           two-line
           class="rounded-0"
           style="max-height: 588px; overflow-y: auto; padding: 4px;border: 1px solid #61f73cff;">
           <v-list-item
-            
             v-for="pl in playlists.filter(p => p.name.name && p.name.name.trim() !== '')"
             :key="pl.id"
             class="rounded-0"
             :class="{ 'primary--text': selectedPlaylist && selectedPlaylist.id === pl.id }"
-            @click="selectPlaylist(pl)"
-          >
+            @click="selectPlaylist(pl)">
             <template #prepend>
               <v-avatar size="56" rounded="0" class="mr-1">
                 <v-img
@@ -76,6 +74,67 @@
             New playlist
           </v-btn>
         </v-list>
+      </v-col> -->
+
+      <!-- Infos playlist sélectionnée -->
+      <v-col cols="3" v-if="selectedPlaylist" class="d-flex flex-column align-center">
+          <!-- Image playlist -->
+          <v-img
+            v-if="selectedPlaylist.songs.length > 0"
+            :src="`https://img.youtube.com/vi/${selectedPlaylist.songs[0].youtubeId}/hqdefault.jpg`"
+            cover
+            class="rounded-0 mb-4 square-cover"
+            style="width: 80%; box-shadow: 0 10px 40px rgba(0,0,0,0.4);"
+          />
+
+          <!-- Placeholder si playlist vide -->
+          <div
+            v-else
+            class="rounded-xl d-flex align-center justify-center mb-4"
+            style="width:260px; height:260px; background: rgba(255,255,255,0.05);"
+          >
+            <v-icon size="64" color="grey">mdi-music</v-icon>
+          </div>
+
+          <v-rating
+           half-increments
+           hover
+           :length="6"
+           size="x-small"
+           :model-value="5.5"
+           active-color="primary"
+          />
+          
+          
+        
+          <!-- Infos (songs + durée) -->
+          <div class="text-caption opacity-70 text-center">
+            {{ selectedPlaylist.songs.length }} songs
+            <span v-if="selectedPlaylist.songs.length">
+              • {{ selectedPlaylist.songs.timeLengthHour || 0 }}h {{ selectedPlaylist.songs.timeLengthMinute || 0 }}m
+            </span>
+          </div>
+
+          <!-- Nom playlist -->
+          <h1 class="text-h6 text-center mb-1">
+            <i>{{ selectedPlaylist.name.name }}</i>
+          </h1>
+          <button class="frutiger-aero-button x-small"><v-icon size="14" class="mr-1" style="margin-bottom:2px;">mdi-pencil</v-icon>Edit</button>
+          <!-- Styles -->
+          <div
+            v-if="selectedPlaylist.name.styles?.length"
+            class="d-flex flex-wrap justify-center"
+            style="gap: 6px;">
+            <v-chip
+              v-for="style in selectedPlaylist.name.styles"
+              :key="style"
+              density="compact"
+              color="niceColor"
+              variant="text"
+              label >
+              {{ style }}
+            </v-chip>
+          </div>
       </v-col>
 
       <!-- Contenu de la playlist sélectionnée -->
@@ -694,4 +753,113 @@ onMounted(() => {
     opacity: 1;
     transform: translateX(0);
   }
+
+  .square-cover {
+    aspect-ratio: 1 / 1;   /* standard moderne */
+    height: auto;
+  }
+
+
+
+
+
+  /*
+  * FRUTIGER BUTTON CSS I STOLE FROM THE NET
+  */
+  /* Authentic Frutiger Aero Button CSS */
+.frutiger-aero-button {
+  /* OKLCH Color System for accurate colors */
+  --hue: 136;
+  --sat: 0.28;
+  --glow-intensity: 0.7;
+  
+  /* Color Variables */
+  --fg: oklch(15% calc(var(--sat) * 0.5) var(--hue));
+  --bg: oklch(75% var(--sat) var(--hue) / 0.8);
+  --bg-dark: oklch(45% var(--sat) var(--hue) / 0.75);
+  --bottom-glow: radial-gradient(
+    farthest-corner at bottom center,
+    rgba(255, 255, 255, var(--glow-intensity)),
+    transparent
+  );
+  
+  /* Base Styling */
+  background-color: var(--bg);
+  background: 
+    var(--bottom-glow),
+    linear-gradient(to bottom, var(--bg-dark), var(--bg));
+  
+  border: 1px solid var(--bg);
+  border-radius: 9999px;
+  
+  /* Shadows and Effects */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
+  
+  /* Typography */
+  color: var(--fg);
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Segoe UI", system-ui, sans-serif;
+  font-weight: 700;
+  text-shadow: 0 2px 0.5em rgba(0, 0, 0, 0.2);
+  
+  /* Layout */
+  cursor: pointer;
+  position: relative;
+  transition: all 300ms ease;
+  
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Top Highlight Effect */
+.frutiger-aero-button::after {
+  content: "";
+  position: absolute;
+  top: 4%;
+  left: 0.75em;
+  width: calc(100% - 1.5em);
+  height: 40%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.1)
+  );
+  border-radius: inherit;
+  transition: background 400ms ease;
+  pointer-events: none;
+}
+
+/* Hover State */
+.frutiger-aero-button:hover,
+.frutiger-aero-button:focus {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Active State */
+.frutiger-aero-button:active {
+  box-shadow: inset 0 6px 4px rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+/* Size Variations */
+.frutiger-aero-button.x-small {
+  padding: 0.4em 1.5em;
+  font-size: 0.715rem;
+}
+
+.frutiger-aero-button.small {
+  padding: 0.5em 1.5em;
+  font-size: 0.875rem;
+}
+
+.frutiger-aero-button.medium {
+  padding: 0.75em 2em;
+  font-size: 1rem;
+}
+
+.frutiger-aero-button.large {
+  padding: 1em 3em;
+  font-size: 1.125rem;
+}
 </style>
