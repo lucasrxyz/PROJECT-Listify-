@@ -8,7 +8,10 @@
 
       <!-- 🎵 Contenu principal -->
       <v-main class="transparent-main">
-        <v-app-bar :elevation="0" height="55" app density="compact" class="transparent-bar">
+        <v-app-bar :elevation="0" height="40" app density="compact" class="transparent-bar" style="border-bottom:3px solid #317b1e;background: #61F73C;background: linear-gradient(180deg, rgba(97, 247, 60, 1) 0%, rgba(74, 145, 58, 1) 0%, rgba(97, 247, 60, 1) 100%);">
+          <v-btn :ripple="false" size="small" style="text-transform: none !important; font-weight: normal !important;"class="text-none ml-5" rounded="0" variant="text" :class="{ selected: $route.path === '/' }" to="/" density="comfortable"><i><span style='font-size:11px;'>Home</span></i></v-btn>
+          <v-btn :ripple="false" size="small" style="text-transform: none !important; font-weight: normal !important;"class="text-none ml-2" rounded="0" variant="text" :class="{ selected: $route.path === '/playlists' }" to="/playlists" density="comfortable"><i><span style='font-size:11px;'>My Playlists</span></i></v-btn>
+          <v-btn :ripple="false" size="small" style="text-transform: none !important; font-weight: normal !important;"class="text-none ml-2" rounded="0" variant="text" :class="{ selected: $route.path === '/settings' }" to="/settings" density="comfortable"><i><span style='font-size:11px;'>Settings</span></i></v-btn>
           <v-spacer></v-spacer>
 
           <v-spacer></v-spacer>
@@ -51,9 +54,9 @@
           </div>
 
           <!-- 🪟 Boutons fenêtre -->
-          <v-btn :ripple="false" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus" @click="windowMinimize"></v-btn>
-          <v-btn :ripple="false" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline" @click="windowMaximize"></v-btn>
-          <v-btn :ripple="false" style="font-size:16px" class="mr-3" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close" @click="windowClose"></v-btn>
+          <v-btn :ripple="false" size="x-small" rounded="0" variant="plain" density="comfortable" icon="mdi-minus" @click="windowMinimize"></v-btn>
+          <v-btn :ripple="false" size="x-small" rounded="0" variant="plain" density="comfortable" icon="mdi-square-outline" @click="windowMaximize"></v-btn>
+          <v-btn :ripple="false" size="small" rounded="0" variant="plain" density="comfortable" icon="mdi-close" @click="windowClose"></v-btn>
         </v-app-bar>
 
         <!-- 🔸 Contenu -->
@@ -153,7 +156,11 @@ html, body, #app {
 .v-btn {
   -webkit-app-region: no-drag;
 }
-
+.v-btn.selected {
+  text-decoration: underline;
+  background: rgba(0,0,0,0) !important;
+  background-color: rgba(0,0,0,0) !important;
+}
 .v-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
