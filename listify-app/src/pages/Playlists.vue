@@ -1,28 +1,77 @@
 <template>
   <v-container fluid class="py-10">
+
+    <v-navigation-drawer
+      permanent
+      color="background"
+      :width="300"
+      class="rounded-0 border-0">
+
+      <v-divider />
+
+      <!-- Playlist list -->
+      <v-list
+        density="compact"
+        nav
+        style="overflow-y:auto; max-height: calc(100vh - 140px);"
+      >
+        <v-list-item
+          v-for="pl in playlists.filter(p => p.name.name && p.name.name.trim() !== '')"
+          :key="pl.id"
+          :active="selectedPlaylist && selectedPlaylist.id === pl.id"
+          active-class="playlist-active"
+          class="rounded-sm aero-list"
+          @click="selectPlaylist(pl)"
+        >
+          <template #prepend>
+            <v-avatar size="36" rounded="0" class="mr-2">
+              <v-img
+                v-if="pl.songs.length > 0"
+                :src="`https://img.youtube.com/vi/${pl.songs[0].youtubeId}/mqdefault.jpg`"
+                cover
+                style="z-index: 0;"
+              />
+              <v-icon v-else icon="mdi-music" size="18" />
+            </v-avatar>
+          </template>
+        
+          <v-list-item-title class="text-truncate">
+            <i>{{ pl.name.name }}</i>
+          </v-list-item-title>
+        
+          <template #append>
+            <v-icon
+              size="16"
+              class="mr-1 playlist-action"
+              @click.stop="deletePlaylist(pl.id)"
+              style="z-index: -1;"
+            >
+              mdi-delete
+            </v-icon>
+          </template>
+        </v-list-item>
+      </v-list>
+    
+      <!-- New playlist button -->
+      <!-- <v-btn
+        block
+        variant="tonal"
+        color="niceColor"
+        class="rounded-0"
+        :loading="isLoading"
+        :ripple="false"
+        @click="promptNewPlaylist"
+      >
+        <v-icon start>mdi-plus</v-icon>
+        New playlist
+      </v-btn> -->
+    </v-navigation-drawer>
+
+
     <v-row class="mb-4">
       <v-col>
         <h1 class="text-h4 ml-5 mb-2">Current playlists</h1>
-        <p>
-          <span
-            style="color:#61f73cff;"
-            class="opacity-50 cursor-pointer ml-5"
-            to="/"
-            @mouseover="hoverHome = true" 
-            @mouseleave="hoverHome = false"
-            :class="hoverHome ? 'text-decoration-underline' : ''"
-          >Home</span>
-          <span class="opacity-50" style="color:#61f73cff;">&nbsp;>&nbsp;</span>
-          <span 
-            class="opacity-70 cursor-pointer"
-            style="color:#61f73cff;"
-            to="/playlists"
-            @mouseover="hoverPlaylists = true" 
-            @mouseleave="hoverPlaylists = false"
-            :class="hoverPlaylists ? 'text-decoration-underline' : ''"
-          >Playlists
-          </span>
-        </p>
+        <button class="frutiger-aero-button x-small ml-5"><v-icon size="14" class="mr-2">mdi-play</v-icon>Random play</button>
       </v-col>
       <v-col class="d-flex justify-end mr-10">
         
@@ -84,7 +133,7 @@
             :src="`https://img.youtube.com/vi/${selectedPlaylist.songs[0].youtubeId}/hqdefault.jpg`"
             cover
             class="rounded-0 mb-4 square-cover"
-            style="width: 80%; box-shadow: 0 10px 40px rgba(0,0,0,0.4);"
+            style="width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.4);"
           />
 
           <!-- Placeholder si playlist vide -->
@@ -861,5 +910,60 @@ onMounted(() => {
 .frutiger-aero-button.large {
   padding: 1em 3em;
   font-size: 1.125rem;
+}
+
+
+
+/*
+*
+* WIN7 CSS I STOLE ON THE NET
+*
+*/
+.aero-list {
+  border: 1px solid #4f504f;
+  box-shadow: inset 0 0 15px 5px rgba(99, 100, 99, 0.3);
+  background: rgb(1, 3, 0);
+  background: linear-gradient(180deg,rgba(1, 3, 0, .7) 0%, rgba(59, 59, 59, .7) 49%, rgba(29, 29, 29, .7) 50%, rgba(54, 54, 54, .7) 100%);
+}
+.aero-list:hover, .aero-list:focus {
+  border: 1px solid #617761;
+  box-shadow: inset 0 0 15px 5px rgba(99, 100, 99, 0.3);
+  background: rgb(1, 3, 0);
+  background: linear-gradient(180deg,rgba(1, 3, 0, .7) 0%, rgba(58, 63, 59, 0.7) 49%, rgba(27, 34, 28, 0.7) 50%, rgba(39, 58, 42, 0.7) 100%);
+}
+
+.win7-btn {
+  border-radius: 3px;
+  border: 1px solid #ddd;
+  padding: 3px 15px 3px 15px;
+  background: #f2f2f2;
+  background: -moz-linear-gradient(top, #f2f2f2 0%, #ebebeb 42%, #dddddd 47%, #cfcfcf 100%);
+  background: -webkit-linear-gradient(top, #f2f2f2 0%, #ebebeb 42%, #dddddd 47%, #cfcfcf 100%);
+  background: linear-gradient(to bottom, #f2f2f2 0%, #ebebeb 42%, #dddddd 47%, #cfcfcf 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', endColorstr='#cfcfcf', GradientType=0);
+  transition: all 0.1s ease-in;
+  border: 1px solid #707070;
+}
+
+.win7-btn:hover,
+.win7-btn:focus {
+  outline: 0;
+  background: #eaf6fd;
+  background: -moz-linear-gradient(top, #2b2e2b 0%, #333b35 42%, #2a382f 47%, #29362c 58%, #233325 100%);
+  background: -webkit-linear-gradient(top, #2b2e2b 0%, #333b35 42%, #2a382f 47%, #29362c 58%, #233325 100%);
+  background: linear-gradient(to bottom, #2b2e2b 0%, #333b35 42%, #2a382f 47%, #29362c 58%, #233325 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#2b2e2b', endColorstr='#233325', GradientType=0);
+  border: 1px solid #3cb142;
+  box-shadow: 0 0 3px #a7f5c1;
+  -o-box-shadow: 0 0 3px #a7f5c1;
+  -webkit-box-shadow: 0 0 3px #a7f5c1;
+  -moz-box-shadow: 0 0 3px #a7f5c1;
+}
+
+.win7-btn:active {
+  box-shadow: inset 0 -1px 6px rgba(0, 0, 0, 0.2), inset 0 -0.7em #befdcc, 0 0 3px #a7f5b4;
+  -o-box-shadow: inset 0 -1px 6px rgba(0, 0, 0, 0.2), inset 0 -0.7em #befdcc, 0 0 3px #a7f5b4;
+  -webkit-box-shadow: inset 0 -1px 6px rgba(0, 0, 0, 0.2), inset 0 -0.7em #befdcc, 0 0 3px #a7f5b4;
+  -moz-box-shadow: inset 0 -1px 6px rgba(0, 0, 0, 0.2), inset 0 -0.7em #befdcc, 0 0 3px #a7f5b4;
 }
 </style>
