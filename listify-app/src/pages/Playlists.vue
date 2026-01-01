@@ -239,7 +239,18 @@
                 <v-btn icon @click.stop="removeSong(idx)" variant="plain" :ripple="false" class="elevation-0 rounded-0 mr-5" density="comfortable">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn> -->
-              
+                <v-icon
+                  class="cursor-pointer transition-all float-right mr-10"
+                  :color="isLiked(song) ? 'primary' : 'grey'"
+                  :class="{ 'scale-115': hoveredHeart === song.id }"
+                  @mouseenter="hoveredHeart = song.id"
+                  @mouseleave="hoveredHeart = null"
+                  @click.stop="toggleLike(song)"
+                >
+                  {{ isLiked(song)
+                    ? 'mdi-heart'
+                    : (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline') }}
+                </v-icon>
                 <v-avatar size="56" rounded="0" class="mr-1">
                   <v-img :src="`https://img.youtube.com/vi/${song.youtubeId}/mqdefault.jpg`" alt="Song thumbnail" />
                 </v-avatar>
@@ -250,18 +261,7 @@
                   <span class="mr-3">{{ song.title || 'Untitled' }}</span>
                   <span class="opacity-70 mr-4">{{ song.artist || 'Random artist' }}</span>
                   <span class="opacity-50">{{ song.duration || '0:00' }}</span>
-                  <v-icon
-                  class="cursor-pointer transition-all float-right mr-10"
-                  :color="isLiked(song) ? 'niceColor' : 'grey'"
-                  :class="{ 'scale-115': hoveredHeart === song.id }"
-                  @mouseenter="hoveredHeart = song.id"
-                  @mouseleave="hoveredHeart = null"
-                  @click.stop="toggleLike(song)"
-                >
-                  {{ isLiked(song)
-                    ? 'mdi-heart'
-                    : (hoveredHeart === song.id ? 'mdi-heart' : 'mdi-heart-outline') }}
-                </v-icon>
+                  
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
