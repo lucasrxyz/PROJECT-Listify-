@@ -133,6 +133,7 @@ export default createStore({
     },
     PLAYER_SET_PLAYING(state, isPlaying) {
       state.player.isPlaying = isPlaying
+      localStorage.setItem('playingLocalStorage', isPlaying ? '1' : '0')
     },
     PLAYER_SET_REPEAT_MODE(state, mode) {
       state.player.repeatMode = mode

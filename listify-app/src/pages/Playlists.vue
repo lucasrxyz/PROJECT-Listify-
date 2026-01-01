@@ -128,14 +128,19 @@
       <!-- Infos playlist sélectionnée -->
       <v-col cols="3" v-if="selectedPlaylist" class="d-flex flex-column align-center">
           <!-- Image playlist -->
-          <v-img
+          <!-- <v-img
             v-if="selectedPlaylist.songs.length > 0"
             :src="`https://img.youtube.com/vi/${selectedPlaylist.songs[0].youtubeId}/hqdefault.jpg`"
             cover
             class="rounded-0 mb-4 square-cover"
             style="width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.4);"
+          /> -->
+          <v-img
+            v-if="selectedPlaylist?.songs?.length > 0"
+            :src="cdStatic"
+            class="rounded-0 mb-4 square-cover cd"
+            :class="{ playing: store.state.player.isPlaying }"
           />
-
           <!-- Placeholder si playlist vide -->
           <div
             v-else
@@ -429,6 +434,11 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import cdStatic  from '../assets/cd_spinning.png'
+
+const isPlayingLocal = computed(() =>
+  store.state.player.isPlaying ? 1 : 0
+)
 
 const store = useStore()
 const route = useRoute()
@@ -752,6 +762,28 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.list-gauche {
+  min-height: 100vh;
+  background-image: url('../assets/dark_aero_wallpaper.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.cd {
+  animation: spin 4s linear infinite;
+  animation-play-state: paused;
+}
+
+.cd.playing {
+  animation-play-state: running;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
   .hover-scale {
     transform: scale(1) !important;
     transition: 0.15s ease-in-out;
@@ -926,7 +958,7 @@ onMounted(() => {
   background: linear-gradient(180deg,rgba(1, 3, 0, .7) 0%, rgba(59, 59, 59, .7) 49%, rgba(29, 29, 29, .7) 50%, rgba(54, 54, 54, .7) 100%);
 }
 .aero-list:hover, .aero-list:focus {
-  border: 1px solid #617761;
+  border: 1px solid rgb(28, 104, 28);
   box-shadow: inset 0 0 15px 5px rgba(99, 100, 99, 0.3);
   background: rgb(1, 3, 0);
   background: linear-gradient(180deg,rgba(1, 3, 0, .7) 0%, rgba(58, 63, 59, 0.7) 49%, rgba(27, 34, 28, 0.7) 50%, rgba(39, 58, 42, 0.7) 100%);

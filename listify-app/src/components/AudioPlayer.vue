@@ -1,16 +1,16 @@
 <template>
-  <v-footer app padless height="90" color="background" class="pb-3">
+  <v-footer app padless height="90" color="background" class="pb-3 aero-list">
     <v-container fluid class="pa-0 d-flex flex-column align-center justify-center">
 
       <!-- Zone boutons + titre -->
-      <div class="d-flex align-center justify-space-between w-100 px-6 mb-2" style="height: 70px;">
+      <div class="d-flex align-center justify-space-between w-100 px-6 mb-2 " style="height: 70px;">
         <!-- Zone gauche : titre + artiste -->
         <v-card
           variant="text"
           class="d-flex align-center rounded-0 pa-2 transition-all box-shadow"
           :style="{
             width: '400px',
-            backgroundColor: '#010200ff',
+            backgroundColor: 'rgba(0,0,0,0)',
             opacity: currentSong ? 1 : 0,
             transition: 'opacity 0.4s ease'
           }">
@@ -81,8 +81,7 @@
             class="d-flex flex-column rounded-0 transition-all position-relative"
             :style="{
               paddingTop: '2px',
-              backgroundColor: '#070807ff',
-              border: '1px solid rgba(71, 212, 35, 0.1)',
+              backgroundColor: 'rgba(0,0,0,0)',
               opacity: showNextCard ? 1 : 0,
               transition: 'opacity 0.6s ease'
             }"
@@ -367,6 +366,8 @@ function prevSong() {
 </script>
 
 <style scoped>
+
+
 .test {
   transform: rotate(180deg) !important;
 }
@@ -481,4 +482,12 @@ function prevSong() {
   .hover-primary:hover {
     color: #61f73cff;
   }
+
+
+.aero-list {
+  border: 1px solid #4f504f;
+  box-shadow: inset 0 0 15px 5px rgba(99, 100, 99, 0.3);
+  background: rgb(1, 3, 0);
+  background: linear-gradient(180deg,rgba(1, 3, 0, .7) 0%, rgba(59, 59, 59, .7) 49%, rgba(29, 29, 29, .7) 50%, rgba(54, 54, 54, .7) 100%);
+}
 </style>
