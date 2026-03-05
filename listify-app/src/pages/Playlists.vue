@@ -53,7 +53,7 @@
       </v-list>
     
       <!-- New playlist button -->
-      <!-- <v-btn
+      <v-btn
         block
         variant="tonal"
         color="niceColor"
@@ -64,7 +64,7 @@
       >
         <v-icon start>mdi-plus</v-icon>
         New playlist
-      </v-btn> -->
+      </v-btn>
     </v-navigation-drawer>
 
 
